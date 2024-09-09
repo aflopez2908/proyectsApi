@@ -8,6 +8,9 @@ package com.mycompany.patrones_gof.factory_method;
  *
  * @author pipel
  */
-public class ConcreteCreatorB {
-    
+class ConcreteCreatorB extends Creator {
+    @Override
+    public Product factoryMethod() {
+        return new ConcreteProductB();
+    }
 }

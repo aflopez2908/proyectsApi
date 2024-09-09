@@ -8,6 +8,11 @@ package com.mycompany.patrones_gof.factory_method;
  *
  * @author pipel
  */
-public class Creator {
-    
+abstract class Creator {
+    public abstract Product factoryMethod();
+
+    public void someOperation() {
+        Product product = factoryMethod();
+        product.create();
+    }
 }

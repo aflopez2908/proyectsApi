@@ -8,6 +8,9 @@ package com.mycompany.patrones_gof.factory_method;
  *
  * @author pipel
  */
-public class ConcreteProductB {
-    
+class ConcreteProductB implements Product {
+    @Override
+    public void create() {
+        System.out.println("Product B created");
+    }
 }

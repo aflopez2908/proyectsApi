@@ -9,5 +9,11 @@ package com.mycompany.patrones_gof.factory_method;
  * @author pipel
  */
 public class FactoryMethodExample {
-    
+    public static void main(String[] args) {
+        Creator creatorA = new ConcreteCreatorA();
+        creatorA.someOperation(); // Output: Product A created
+
+        Creator creatorB = new ConcreteCreatorB();
+        creatorB.someOperation(); // Output: Product B created
+    }
 }
