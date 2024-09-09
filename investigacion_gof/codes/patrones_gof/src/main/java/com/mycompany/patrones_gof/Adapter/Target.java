@@ -2,15 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.mycompany.patrones_gof.Builder;
+package com.mycompany.patrones_gof.Adapter;
 
 /**
  *
  * @author pipel
  */
-public interface Builder {
-    void buildPartA();
-    void buildPartB();
-    void buildPartC();
-    Product getResult();
+public interface Target {
+    void request();
 }
