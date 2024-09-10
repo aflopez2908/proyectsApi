@@ -1,6 +1,16 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.crud;
+
+/**
+ *
+ * @author pipel
+ */
 import java.util.List;
 
-public class Main {
+public class CRUD {
     public static void main(String[] args) {
         UserService userService = new UserService();
 
@@ -25,3 +35,4 @@ public class Main {
         userService.deleteUser(1);
     }
 }
+
