@@ -15,7 +15,7 @@ public class CRUD {
         UserService userService = new UserService();
 
         // Crear un nuevo usuario
-        User user1 = new User(0, "john_doe", "john@example.com", "password123");
+        User user1 = new User(0, "andres", "prueba@example.com", "constrasena1234");
         userService.addUser(user1);
 
         // Obtener todos los usuarios
