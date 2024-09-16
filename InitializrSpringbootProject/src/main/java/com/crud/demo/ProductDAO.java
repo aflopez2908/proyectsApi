@@ -4,10 +4,17 @@
  */
 package com.crud.demo;
 
+import java.util.List;
+
 /**
  *
  * @author pipel
  */
 public interface ProductDAO {
-    
+    Product createProduct(Product product);
+    Product getProductById(Long id);
+    List<Product> getAllProducts();
+    Product updateProduct(Product product);
+    void deleteProduct(Long id);
 }
+
