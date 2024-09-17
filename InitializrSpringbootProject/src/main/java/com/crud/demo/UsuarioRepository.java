@@ -4,17 +4,12 @@
  */
 package com.crud.demo;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author pipel
  */
-public interface ProductDAO {
-    Product createProduct(Product product);
-    Product getProductById(Long id);
-    List<Product> getAllProducts();
-    Product updateProduct(Product product);
-    void deleteProduct(Long id);
+public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
+    
 }
-

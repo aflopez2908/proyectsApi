@@ -20,7 +20,7 @@ public class OracleConnection {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
             this.connection = DriverManager.getConnection(
-                "jdbc:oracle:thin:@//localhost:1521/ORCL", "your_username", "your_password");
+                "jdbc:oracle:thin:@//localhost:1521/ORCL", "SYSTEM", "AFLRaflr2908??");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
