@@ -27,8 +27,9 @@ public class CrudApplication implements CommandLineRunner {
         student.setEmail("`prueba.doe@example.com");
 
         // Guardar en la base de datos
-        studentRepository.save(student);
+        //studentRepository.save(student);
         //studentRepository.delete(student);
+        
 
         System.out.println("Estudiante insertado con éxito: " + student);
     }
