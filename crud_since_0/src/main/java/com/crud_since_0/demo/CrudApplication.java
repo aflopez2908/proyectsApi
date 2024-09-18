@@ -28,6 +28,7 @@ public class CrudApplication implements CommandLineRunner {
 
         // Guardar en la base de datos
         studentRepository.save(student);
+        //studentRepository.delete(student);
 
         System.out.println("Estudiante insertado con éxito: " + student);
     }
