@@ -28,6 +28,42 @@ public class Student {
     private String firstName;
     private String lastName;
     private String email;
+    
+    
+     public Long getStudentId() {
+        return this.studantId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studantId = studentId;
+    }
+
+    // Getter y Setter para firstName
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    // Getter y Setter para lastName
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    // Getter y Setter para email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
 
     

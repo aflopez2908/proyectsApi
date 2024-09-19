@@ -41,5 +41,10 @@ public class StudentService {
       
           studentRepository.deleteById(id);
       }
+
+    public Student getById(Long id) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     
 }
