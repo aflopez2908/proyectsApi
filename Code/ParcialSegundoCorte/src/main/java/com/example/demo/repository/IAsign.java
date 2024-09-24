@@ -12,6 +12,7 @@ import java.util.List;
  * @author pipel
  */
 public interface IAsign {
+    
     public int Create(Asign asign);
     public List<Asign> Read();
     public int Update(Asign asign);

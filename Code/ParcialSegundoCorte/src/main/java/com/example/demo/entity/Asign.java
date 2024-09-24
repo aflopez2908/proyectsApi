@@ -4,10 +4,13 @@
  */
 package com.example.demo.entity;
 
+import lombok.Data;
+
 /**
  *
  * @author pipel
  */
+@Data
 public class Asign {
     
     private int asign_id;
