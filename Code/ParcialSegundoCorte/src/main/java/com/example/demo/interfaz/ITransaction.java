@@ -4,7 +4,6 @@
  */
 package com.example.demo.interfaz;
 
-import com.example.demo.entity.Asign;
 import com.example.demo.entity.Transaction;
 import java.util.List;
 
