@@ -13,11 +13,14 @@ import lombok.Data;
 @Data
 public class Asign {
     
-    private int asign_id;
+    private int tarea_id;
+    private int proyecto_id;
     private String nombre;
-    private String description;
-    private String status;
-    private String fecha_creacion;  
+    private String descripcion;
+    private int estado_id;
+    private String fecha_inicio;
+    private String fecha_fin; 
+    private String asignado_a;
     
     
     

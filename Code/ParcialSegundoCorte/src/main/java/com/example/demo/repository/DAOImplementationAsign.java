@@ -26,7 +26,7 @@ public class DAOImplementationAsign implements IAsign{
     @Override
     public int Create(Asign asign) {
         String Query = "INSERT INTO [dbo].[Usuarios] (nombre, email, contraseña, rol_id, fecha_creacion) VALUES (?, ?, ?,?,?)";
-        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getDescription(),asign.getStatus(),asign.getFecha_creacion()});
+        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getProyecto_id(),asign.getDescripcion(),asign.getEstado_id()});
     }
 
     @Override
@@ -38,7 +38,7 @@ public class DAOImplementationAsign implements IAsign{
     @Override
     public int Update(Asign asign) {
         String Query = "UPDATE [dbo].[Usuarios] SET nombre = ?, email = ?, contraseña = ?, rol_id = ?, fecha_creacion = ? WHERE usuario_id = ?;";
-        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getDescription(),asign.getStatus(),asign.getFecha_creacion()});
+        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getProyecto_id(),asign.getDescripcion(),asign.getEstado_id()});
     }
 
     @Override
