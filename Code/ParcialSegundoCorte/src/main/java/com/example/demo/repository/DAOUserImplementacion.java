@@ -6,7 +6,6 @@ package com.example.demo.repository;
 
 import com.example.demo.interfaz.IUser;
 import com.example.demo.entity.User;
-import com.fasterxml.jackson.databind.BeanProperty;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

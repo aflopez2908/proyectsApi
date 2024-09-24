@@ -5,9 +5,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
-import com.example.demo.entity.Asign;
 import com.example.demo.entity.Transaction;
-import com.example.demo.interfaz.IAsignService;
 import com.example.demo.interfaz.ITransactionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

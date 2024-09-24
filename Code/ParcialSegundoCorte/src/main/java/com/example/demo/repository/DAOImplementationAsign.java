@@ -26,7 +26,7 @@ public class DAOImplementationAsign implements IAsign{
     @Override
     //no esta implementado
     public int Create(Asign asign) {
-        String Query = "INSERT INTO [dbo].[Usuarios] (nombre, email, contraseña, rol_id, fecha_creacion) VALUES (?, ?, ?,?,?)";
+        String Query = "INSERT INTO [dbo].[Tareas] (nombre, email, contraseña, rol_id, fecha_creacion) VALUES (?, ?, ?,?,?)";
         return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getProyecto_id(),asign.getDescripcion(),asign.getEstado_id()});
     }
     
