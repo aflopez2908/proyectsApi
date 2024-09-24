@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface ITransaction {
     
-    public int Create(Transaction trasaction);
+    public int Create(Transaction transaction);
     public List<Transaction> Read();
     public int Update(Transaction transaction);
     public int Delete(String historial_id);

@@ -5,11 +5,14 @@
 package com.example.demo.entity;
 
 import java.util.Date;
+import lombok.Data;
 
 /**
  *
  * @author pipel
  */
+
+@Data
 public class Transaction {
     
     private String historial_id;
