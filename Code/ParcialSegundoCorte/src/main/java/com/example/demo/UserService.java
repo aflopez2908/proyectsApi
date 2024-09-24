@@ -21,7 +21,6 @@ public class UserService implements IUserService{
         int row;
         try {
             row =  iuser.Create(user);
-            System.out.println("Hola mundo");
         } catch (Exception e) {
             throw e;
         }
