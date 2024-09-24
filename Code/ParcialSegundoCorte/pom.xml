@@ -11,7 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringbootSQLserver</name>
+	<name>SpringbootSQLazure</name>
 	<description>Test 1 Connect BD SQLserver</description>
 	<url/>
 	<licenses>

@@ -62,7 +62,6 @@ public class UserController {
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("User delete with success");
-            System.out.println("New Ob");
         }
         return new ResponseEntity<>(serviceResponse,HttpStatus.OK);        
     }    
