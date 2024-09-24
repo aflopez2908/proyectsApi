@@ -5,8 +5,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Asign;
-import com.example.demo.repository.IAsign;
-import com.example.demo.repository.IAsignService;
+import com.example.demo.interfaz.IAsign;
+import com.example.demo.interfaz.IAsignService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

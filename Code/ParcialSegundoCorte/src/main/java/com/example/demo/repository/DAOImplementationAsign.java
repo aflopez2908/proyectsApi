@@ -5,7 +5,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Asign;
-import com.example.demo.repository.IAsign;
+import com.example.demo.interfaz.IAsign;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

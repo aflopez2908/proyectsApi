@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.demo.repository;
+package com.example.demo.interfaz;
 
 import com.example.demo.entity.Asign;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author pipel
  */
-public interface IAsignService {
+public interface IAsign {
     
     public int Create(Asign asign);
     public List<Asign> Read();
