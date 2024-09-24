@@ -25,7 +25,7 @@ public class DaoImplementationTransaction implements ITransaction{
     
     @Override
     public int Create(Transaction transaction) {
-        String Query = "INSERT INTO [dbo].[Usuarios] (nombre, email, contraseña, rol_id, fecha_creacion) VALUES (?, ?, ?,?,?)";
+        String Query = "INSERT INTO [dbo].[Historial_Tareas] (tarea_id, cambio, fecha_cambio, usuario_id,vigente) VALUES (?, ?,?,?,?)";
         return jdbctemplateT.update(Query, new Object[]{transaction.getHistorial_id(),transaction.getTarea_id(),transaction.getUsuario_id(),transaction.getVigente()} );
     }
     
@@ -34,13 +34,21 @@ public class DaoImplementationTransaction implements ITransaction{
         String Query = "select * from [dbo].[Usuarios]";
         return jdbctemplateT.query(Query, BeanPropertyRowMapper.newInstance(Transaction.class));  
     }
+    
+    //no esta implementado
 
     @Override
     public int Update(Transaction transaction) {
-        String Query = "UPDATE [dbo].[Usuarios] SET nombre = ?, email = ?, contraseña = ?, rol_id = ?, fecha_creacion = ? WHERE usuario_id = ?;";
+        String Query = "UPDATE [dbo].[Historial_Tareas] SET tarea_id = ?, cambio = ?, fecha_cambio = ?, usuario_id = ?, vigente = ? WHERE historial_id = ?;";
         return jdbctemplateT.update(Query, new Object[]{transaction.getHistorial_id(),transaction.getTarea_id(),transaction.getUsuario_id(),transaction.getVigente()});
     }
-
+    
+    @Override
+    public int UpdateS(Transaction transaction) {
+        String Query = "UPDATE [dbo].[Historial_Tareas] SET vigente = ? WHERE historial_id = ?;";
+        return jdbctemplateT.update(Query, new Object[]{transaction.getHistorial_id(),transaction.getTarea_id(),transaction.getUsuario_id(),transaction.getVigente()});
+    }
+    //no esta implementado
     @Override
     public int Delete(String historial_id) {
         String Query = "DELETE FROM [dbo].[Usuarios] WHERE usuario_id = ?;";
