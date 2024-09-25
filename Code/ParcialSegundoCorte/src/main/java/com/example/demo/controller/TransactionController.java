@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author pipel
  */
 
-  @RestController
+@RestController
 @RequestMapping("api/v1/transaction")
 @CrossOrigin("*")
 public class TransactionController {
@@ -39,7 +39,7 @@ public class TransactionController {
       int result = itransactionservice.Create(transaction);
         if (result == 1) {
             serviceResponse.setSuccess(true);
-            serviceResponse.setMessage("User Crete with success");
+            serviceResponse.setMessage("Task Crete with success");
         }
         return new ResponseEntity<>(serviceResponse,HttpStatus.OK);
     }

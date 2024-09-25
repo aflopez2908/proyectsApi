@@ -5,8 +5,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
-import com.example.demo.entity.Asign;
-import com.example.demo.interfaz.IAsignService;
+import com.example.demo.entity.Task;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,42 +17,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.demo.interfaz.ITaskService;
 
-/**
- *
- * @author pipel
- */
-
-  @RestController
-@RequestMapping("api/v1/asign")
+@RestController
+@RequestMapping("api/v1/task")
 @CrossOrigin("*")
-public class AsignController {
+public class TaskController {
     
 
     @Autowired
-    private IAsignService iasignservice;
+    private ITaskService iasignservice;
     
     @PostMapping("/create")
-    public ResponseEntity<ServiceResponse> create(@RequestBody Asign asign){
+    public ResponseEntity<ServiceResponse> create(@RequestBody Task task){
       ServiceResponse serviceResponse = new ServiceResponse();
-      int result = iasignservice.Create(asign);
+      int result = iasignservice.Create(task);
         if (result == 1) {
             serviceResponse.setSuccess(true);
-            serviceResponse.setMessage("User Crete with success");
+            serviceResponse.setMessage("Task Crete with success");
         }
         return new ResponseEntity<>(serviceResponse,HttpStatus.OK);
     }
     
     @GetMapping("/read")
-    public ResponseEntity<List<Asign>> read() {
+    public ResponseEntity<List<Task>> read() {
         var result  = iasignservice.Read();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
     
     @PostMapping("/update")    
-    public ResponseEntity<ServiceResponse> update(@RequestBody Asign asign){
+    public ResponseEntity<ServiceResponse> update(@RequestBody Task task){
       ServiceResponse serviceResponse = new ServiceResponse();
-      int result = iasignservice.Update(asign);
+      int result = iasignservice.Update(task);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("User Update with success");

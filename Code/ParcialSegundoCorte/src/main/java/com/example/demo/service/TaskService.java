@@ -4,12 +4,12 @@
  */
 package com.example.demo.service;
 
-import com.example.demo.entity.Asign;
-import com.example.demo.interfaz.IAsign;
-import com.example.demo.interfaz.IAsignService;
+import com.example.demo.entity.Task;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.interfaz.ITask;
+import com.example.demo.interfaz.ITaskService;
 
 /**
  *
@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class AsignService implements IAsignService {
+public class TaskService implements ITaskService {
     
     @Autowired
-    private IAsign iasign;
+    private ITask iasign;
     
     @Override
-    public int Create(Asign asign) {
+    public int Create(Task asign) {
         int row;
         try {
             row =  iasign.Create(asign);
@@ -34,8 +34,8 @@ public class AsignService implements IAsignService {
     }
     
     @Override
-    public List<Asign> Read() {
-        List<Asign> list;
+    public List<Task> Read() {
+        List<Task> list;
         try {
             list = iasign.Read();
         } catch (Exception e) {
@@ -45,7 +45,7 @@ public class AsignService implements IAsignService {
     }
     
     @Override
-    public int Update(Asign asign) {
+    public int Update(Task asign) {
         int row;
         try {
             row =  iasign.Update(asign);

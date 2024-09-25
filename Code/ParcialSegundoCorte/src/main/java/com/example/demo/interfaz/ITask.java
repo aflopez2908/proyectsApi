@@ -4,18 +4,18 @@
  */
 package com.example.demo.interfaz;
 
-import com.example.demo.entity.Asign;
+import com.example.demo.entity.Task;
 import java.util.List;
 
 /**
  *
  * @author pipel
  */
-public interface IAsign {
+public interface ITask {
     
-    public int Create(Asign asign);
-    public List<Asign> Read();
-    public int Update(Asign asign);
+    public int Create(Task asign);
+    public List<Task> Read();
+    public int Update(Task asign);
     public int Delete(int asign_id); 
     
 }

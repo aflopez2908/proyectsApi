@@ -11,7 +11,7 @@ import lombok.Data;
  * @author pipel
  */
 @Data
-public class Asign {
+public class Task {
     
     private int tarea_id;
     private int proyecto_id;
@@ -21,7 +21,4 @@ public class Asign {
     private String fecha_inicio;
     private String fecha_fin; 
     private String asignado_a;
-    
-    
-    
 }
