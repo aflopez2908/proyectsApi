@@ -19,57 +19,51 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author pipel
- */
-
 @RestController
-@RequestMapping("api/v1/transaction")
+@RequestMapping("api/v1/transactiontask")
 @CrossOrigin("*")
-public class TransactionController {
-      
-     
-      @Autowired
+public class TransactionTaskController {
+
+    @Autowired
     private ITransactionService itransactionservice;
-    
+
     @PostMapping("/create")
-    public ResponseEntity<ServiceResponse> create(@RequestBody Transaction transaction){
-      ServiceResponse serviceResponse = new ServiceResponse();
-      int result = itransactionservice.Create(transaction);
+    public ResponseEntity<ServiceResponse> create(@RequestBody Transaction transaction) {
+        ServiceResponse serviceResponse = new ServiceResponse();
+        int result = itransactionservice.Create(transaction);
         if (result == 1) {
             serviceResponse.setSuccess(true);
-            serviceResponse.setMessage("Task Crete with success");
+            serviceResponse.setMessage("History task Crete with success");
         }
-        return new ResponseEntity<>(serviceResponse,HttpStatus.OK);
+        return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
     }
-    
+
     @GetMapping("/read")
     public ResponseEntity<List<Transaction>> read() {
-        var result  = itransactionservice.Read();
+        var result = itransactionservice.Read();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-    
-    @PostMapping("/update")    
-    public ResponseEntity<ServiceResponse> update(@RequestBody Transaction transaction){
-      ServiceResponse serviceResponse = new ServiceResponse();
-      int result = itransactionservice.Update(transaction);
+
+    @PostMapping("/update")
+    public ResponseEntity<ServiceResponse> update(@RequestBody Transaction transaction) {
+        ServiceResponse serviceResponse = new ServiceResponse();
+        int result = itransactionservice.Update(transaction);
         if (result == 1) {
             serviceResponse.setSuccess(true);
-            serviceResponse.setMessage("User Update with success");
+            serviceResponse.setMessage("History task Update with success");
         }
-        return new ResponseEntity<>(serviceResponse,HttpStatus.OK);        
+        return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
     }
 
-    @PostMapping("/delete/{id}")    
-    public ResponseEntity<ServiceResponse> delete(@PathVariable String id){
-      ServiceResponse serviceResponse = new ServiceResponse();
-      int result = itransactionservice.Delete(id);
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<ServiceResponse> delete(@PathVariable String id) {
+        ServiceResponse serviceResponse = new ServiceResponse();
+        int result = itransactionservice.Delete(id);
         if (result == 1) {
             serviceResponse.setSuccess(true);
-            serviceResponse.setMessage("User delete with success");
+            serviceResponse.setMessage("History task  delete with success");
         }
-        return new ResponseEntity<>(serviceResponse,HttpStatus.OK);        
+        return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
     }
-    
+
 }
