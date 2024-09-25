@@ -25,6 +25,9 @@ public class TransactionTaskService implements ITransactionTaskService{
     @Autowired
     private ITransactionTask itransaction;
     
+    @Autowired
+    private ITask itask;
+    
     @Override
     public int Create(TransactionTask transaction) {
         int row;        
@@ -36,6 +39,22 @@ public class TransactionTaskService implements ITransactionTaskService{
         }
         return row;
     }
+    
+    public int CreateAfter(TransactionTask transaction) {
+        int row;        
+        try {
+            int update = itransaction.UpdateS(transaction);
+            int createrow =  itransaction.Create(transaction);  
+            int updatebyid = itask.UpdateStateId(task);
+    
+            row= createrow;            
+        } catch (Exception e) {
+            throw e;
+        }
+        return row;
+    }
+    
+    
     
     @Override
     public List<TransactionTask> Read() {
@@ -75,11 +94,13 @@ public class TransactionTaskService implements ITransactionTaskService{
         int row;
         try {
             row =  itransaction.UpdateS(transaction);
+            
         } catch (Exception e) {
             throw e;
         }
         return row;
     } 
+    
 
     @Override
     public int Delete(String historial_id) {
