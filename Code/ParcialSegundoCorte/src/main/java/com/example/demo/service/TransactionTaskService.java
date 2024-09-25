@@ -25,21 +25,12 @@ public class TransactionTaskService implements ITransactionTaskService{
     @Autowired
     private ITransactionTask itransaction;
     
-    @Autowired
-    private ITask itask;
-    
-    
-    
     @Override
-    public int Create(TransactionTask transaction, Task task) {
-        int row;
-        
+    public int Create(TransactionTask transaction) {
+        int row;        
         try {
-            int createrow =  itransaction.Create(transaction);
-            int updaterow= itask.UpdateStateId(task);
-            
-            row= createrow+updaterow;
-            
+            int createrow =  itransaction.Create(transaction);           
+            row= createrow;            
         } catch (Exception e) {
             throw e;
         }

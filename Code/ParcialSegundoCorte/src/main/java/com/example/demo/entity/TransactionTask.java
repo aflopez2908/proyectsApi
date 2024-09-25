@@ -12,7 +12,7 @@ public class TransactionTask {
     private String historial_id;
     private int tarea_id;
     private String cambio;
-    private Date fecha_cambio;
-    private int usuario_id;
+    private String fecha_cambio;
+    private String usuario_id;
     private int vigente;
 }

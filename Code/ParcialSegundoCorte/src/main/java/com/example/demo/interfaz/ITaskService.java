@@ -4,12 +4,13 @@
  */
 package com.example.demo.interfaz;
 import com.example.demo.entity.Task;
-import com.example.demo.entity.TransactionTask;
 import java.util.List;
 
 public interface ITaskService {    
-    public int Create(Task task,TransactionTask transaction);
+    public int Create(Task task);
     public List<Task> Read();
     public int UpdateStateId(Task task);
-    public int Delete(int task_id);  
+    public int Delete(int task_id);   
+    public int GetMax();
+
 }

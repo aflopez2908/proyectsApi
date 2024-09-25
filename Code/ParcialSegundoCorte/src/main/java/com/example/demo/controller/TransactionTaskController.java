@@ -5,7 +5,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
-import com.example.demo.entity.Task;
 import com.example.demo.entity.TransactionTask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,9 @@ public class TransactionTaskController {
     private ITransactionTaskService itransactionservice;
 
     @PostMapping("/create")
-    public ResponseEntity<ServiceResponse> create(@RequestBody TransactionTask transaction,@RequestBody Task task ) {
+    public ResponseEntity<ServiceResponse> create(@RequestBody TransactionTask transaction) {
         ServiceResponse serviceResponse = new ServiceResponse();
-        int result = itransactionservice.Create(transaction,task);
+        int result = itransactionservice.Create(transaction);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("History task Crete with success");

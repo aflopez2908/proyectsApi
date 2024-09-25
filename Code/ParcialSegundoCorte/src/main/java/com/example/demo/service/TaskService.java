@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.example.demo.service;
+
 import com.example.demo.entity.Task;
 import com.example.demo.entity.TransactionTask;
 import java.util.List;
@@ -14,27 +15,53 @@ import com.example.demo.interfaz.ITransactionTask;
 
 @Service
 public class TaskService implements ITaskService {
-    
+
     @Autowired
     private ITask iasign;
     
     @Autowired
-    private ITransactionTask itransactiontask;
+    private ITransactionTask itransaction;
     
     @Override
-    public int Create(Task task, TransactionTask transaction) {
+    public int GetMax(){
+    int value=0;
+    
+    try {
+            value = iasign.GetMax();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+    
+    
+    
+    return value;
+    }
+
+    @Override
+    public int Create(Task task ) {
         int row;
         try {
-            int rowasign =  iasign.Create(task);
-            int rowtransaction= itransactiontask.Create(transaction);
-            
-            row= rowasign+rowtransaction;
+            int rowasign = iasign.Create(task);
+            int rowmodify=0;
+            if (rowasign == 1){
+              int value= GetMax();
+              TransactionTask transaction = new TransactionTask();
+              transaction.setTarea_id(value);
+              transaction.setCambio("Tarea Creada");
+              transaction.setFecha_cambio(task.getFecha_inicio());
+              transaction.setUsuario_id(task.getAsignado_a());
+              transaction.setVigente(1);
+              rowmodify= itransaction.Create(transaction);
+                System.out.println("El objeto es:" + transaction);
+            }
+            row = rowasign + rowmodify;
         } catch (Exception e) {
             throw e;
         }
         return row;
     }
-    
+
     @Override
     public List<Task> Read() {
         List<Task> list;
@@ -45,12 +72,12 @@ public class TaskService implements ITaskService {
         }
         return list;
     }
-    
+
     @Override
     public int UpdateStateId(Task task) {
         int row;
         try {
-            row =  iasign.UpdateStateId(task);
+            row = iasign.UpdateStateId(task);
         } catch (Exception e) {
             throw e;
         }
@@ -61,10 +88,10 @@ public class TaskService implements ITaskService {
     public int Delete(int task_id) {
         int row;
         try {
-            row =  iasign.Delete(task_id);
+            row = iasign.Delete(task_id);
         } catch (Exception e) {
             throw e;
         }
         return row;
-    }            
+    }
 }

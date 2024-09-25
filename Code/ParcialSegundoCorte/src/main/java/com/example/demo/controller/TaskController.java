@@ -6,7 +6,6 @@ package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
 import com.example.demo.entity.Task;
-import com.example.demo.entity.TransactionTask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +30,9 @@ public class TaskController {
     private ITaskService iasignservice;
     
     @PostMapping("/create")
-    public ResponseEntity<ServiceResponse> create(@RequestBody Task task,@RequestBody TransactionTask transactiontask ){
+    public ResponseEntity<ServiceResponse> create(@RequestBody Task task){
       ServiceResponse serviceResponse = new ServiceResponse();
-      int result = iasignservice.Create(task,transactiontask);
+      int result = iasignservice.Create(task);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("Task Crete with success");
