@@ -37,5 +37,13 @@ public class DAOImplementationTask implements ITask{
     public int Delete(int task_id) {
         String Query = "DELETE FROM [dbo].[Tareas] WHERE tarea_id = ?;";
         return jdbctemplate.update(Query, new Object[]{task_id});
-    }      
+    }
+    
+    @Override
+    public int GetMax() {
+    String Query = "SELECT MAX(tarea_id) FROM dbo.Tareas;";
+    
+    
+    return jdbctemplate.queryForObject(Query, Integer.class);
+}
 }

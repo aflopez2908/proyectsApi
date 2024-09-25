@@ -17,6 +17,22 @@ public class TaskService implements ITaskService {
 
     @Autowired
     private ITask iasign;
+    
+    @Override
+    public int GetMax(){
+    int value=0;
+    
+    try {
+            value = iasign.GetMax();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+    
+    
+    
+    return value;
+    }
 
     @Override
     public int Create(Task task) {
@@ -24,8 +40,9 @@ public class TaskService implements ITaskService {
         try {
             int rowasign = iasign.Create(task);
             if (rowasign == 1){
+              int value= GetMax();
               TransactionTask transaction = new TransactionTask();
-              transaction.setTarea_id(task.getTarea_id());
+              transaction.setTarea_id(value);
               transaction.setCambio("Tarea Creada");
               transaction.setFecha_cambio(task.getFecha_inicio());
               transaction.setUsuario_id(task.getAsignado_a());

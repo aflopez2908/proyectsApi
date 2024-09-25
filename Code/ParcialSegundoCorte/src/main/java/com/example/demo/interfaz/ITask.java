@@ -10,5 +10,6 @@ public interface ITask {
     public int Create(Task task);
     public List<Task> Read();
     public int UpdateStateId(Task task);
-    public int Delete(int task_id);     
+    public int Delete(int task_id); 
+    public int GetMax();
 }
