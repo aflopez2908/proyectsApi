@@ -13,10 +13,12 @@ public interface ITransactionTaskService {
     public int Create(TransactionTask transaction, Task task);
 
     public List<TransactionTask> Read();
+    public int UpdateS(TransactionTask transaction);
+    
 
     public int Update(TransactionTask transaction);
     
-    public int UpdateS(TransactionTask transaction);
+    
 
     public int Delete(String historial_id);
 }
