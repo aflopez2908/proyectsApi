@@ -4,11 +4,13 @@
  */
 package com.example.demo.service;
 import com.example.demo.entity.Task;
+import com.example.demo.entity.TransactionTask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.interfaz.ITask;
 import com.example.demo.interfaz.ITaskService;
+import com.example.demo.interfaz.ITransactionTask;
 
 @Service
 public class TaskService implements ITaskService {
@@ -16,11 +18,17 @@ public class TaskService implements ITaskService {
     @Autowired
     private ITask iasign;
     
+    @Autowired
+    private ITransactionTask itransactiontask;
+    
     @Override
-    public int Create(Task task) {
+    public int Create(Task task, TransactionTask transaction) {
         int row;
         try {
-            row =  iasign.Create(task);
+            int rowasign =  iasign.Create(task);
+            int rowtransaction= itransactiontask.Create(transaction);
+            
+            row= rowasign+rowtransaction;
         } catch (Exception e) {
             throw e;
         }
