@@ -9,6 +9,6 @@ import java.util.List;
 public interface ITaskService {    
     public int Create(Task task);
     public List<Task> Read();
-    public int Update(Task task);
+    public int UpdateStateId(Task task);
     public int Delete(int task_id);     
 }

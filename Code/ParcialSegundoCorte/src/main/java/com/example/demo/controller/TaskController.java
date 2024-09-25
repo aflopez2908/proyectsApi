@@ -48,7 +48,7 @@ public class TaskController {
     @PostMapping("/update")    
     public ResponseEntity<ServiceResponse> update(@RequestBody Task task){
       ServiceResponse serviceResponse = new ServiceResponse();
-      int result = iasignservice.Update(task);
+      int result = iasignservice.UpdateStateId(task);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("User Update with success");

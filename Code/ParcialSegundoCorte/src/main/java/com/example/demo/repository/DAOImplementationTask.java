@@ -12,46 +12,30 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.example.demo.interfaz.ITask;
 
-/**
- *
- * @author pipel
- */
-
 @Repository
-public class DAOImplementationTask implements ITask{
-    
+public class DAOImplementationTask implements ITask{    
      @Autowired
     private JdbcTemplate jdbctemplate;
 
     @Override
-    //no esta implementado
-    public int Create(Task asign) {
-        String Query = "INSERT INTO [dbo].[Tareas] (nombre, email, contraseña, rol_id, fecha_creacion) VALUES (?, ?, ?,?,?)";
-        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getProyecto_id(),asign.getDescripcion(),asign.getEstado_id()});
-    }
-    
-    
-
+    public int Create(Task task) {
+        String Query = "insert into [dbo].[Tareas] (proyecto_id, nombre, descripcion, estado_id, fecha_inicio, fecha_fin, asignado_a) VALUES (?,?,?,?,?,?,?)";
+        return jdbctemplate.update(Query, new Object[]{task.getProyecto_id(),task.getNombre(),task.getDescripcion(),task.getEstado_id(),task.getFecha_inicio(),task.getFecha_fin(),task.getAsignado_a()});
+    }       
     @Override
     public List<Task> Read() {
         String Query = "select * from [dbo].[Tareas]";
         return jdbctemplate.query(Query, BeanPropertyRowMapper.newInstance(Task.class));  
+    }    
+    @Override
+    public int UpdateStateId(Task task) {
+        String Query = "update [dbo].[Tareas] set estado_id = ? where  tarea_id = ?;";
+        return jdbctemplate.update(Query, new Object[]{task.getEstado_id(),task.getTarea_id()});
     }
-    
     //no esta implementado
     @Override
-    public int Update(Task asign) {
-        String Query = "UPDATE [dbo].[Usuarios] SET nombre = ?, email = ?, contraseña = ?, rol_id = ?, fecha_creacion = ? WHERE usuario_id = ?;";
-        return jdbctemplate.update(Query, new Object[]{asign.getNombre(), asign.getProyecto_id(),asign.getDescripcion(),asign.getEstado_id()});
-    }
-    //no esta implementado
-    @Override
-    public int Delete(int usuario_id) {
-        String Query = "DELETE FROM [dbo].[Usuarios] WHERE usuario_id = ?;";
-        return jdbctemplate.update(Query, new Object[]{usuario_id});
-    }
-
-
-     
-    
+    public int Delete(int task_id) {
+        String Query = "DELETE FROM [dbo].[Tareas] WHERE tarea_id = ?;";
+        return jdbctemplate.update(Query, new Object[]{task_id});
+    }      
 }
