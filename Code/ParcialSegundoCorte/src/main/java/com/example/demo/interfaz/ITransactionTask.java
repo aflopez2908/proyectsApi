@@ -18,4 +18,6 @@ public interface ITransactionTask {
     public int UpdateS(TransactionTask transaction);
 
     public int Delete(String historial_id);
+    
+    public int GetSpecific();
 }
