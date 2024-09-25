@@ -11,12 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demo.interfaz.ITask;
 import com.example.demo.interfaz.ITaskService;
+import com.example.demo.interfaz.ITransactionTask;
 
 @Service
 public class TaskService implements ITaskService {
 
     @Autowired
     private ITask iasign;
+    
+    @Autowired
+    private ITransactionTask itransaction;
     
     @Override
     public int GetMax(){
@@ -35,10 +39,11 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public int Create(Task task) {
+    public int Create(Task task ) {
         int row;
         try {
             int rowasign = iasign.Create(task);
+            int rowmodify=0;
             if (rowasign == 1){
               int value= GetMax();
               TransactionTask transaction = new TransactionTask();
@@ -46,10 +51,11 @@ public class TaskService implements ITaskService {
               transaction.setCambio("Tarea Creada");
               transaction.setFecha_cambio(task.getFecha_inicio());
               transaction.setUsuario_id(task.getAsignado_a());
-              transaction.setVigente(1);  
+              transaction.setVigente(1);
+              rowmodify= itransaction.Create(transaction);
                 System.out.println("El objeto es:" + transaction);
             }
-            row = rowasign;
+            row = rowasign + rowmodify;
         } catch (Exception e) {
             throw e;
         }

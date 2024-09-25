@@ -12,4 +12,5 @@ public interface ITaskService {
     public int UpdateStateId(Task task);
     public int Delete(int task_id);   
     public int GetMax();
+
 }
