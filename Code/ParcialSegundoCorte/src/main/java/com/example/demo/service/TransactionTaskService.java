@@ -49,6 +49,17 @@ public class TransactionTaskService implements ITransactionTaskService{
     }
     
     @Override
+    public int GetSpecific() {
+        int row;
+        try {
+            row =  itransaction.GetSpecific();
+        } catch (Exception e) {
+            throw e;
+        }
+        return row;
+    }
+    
+    @Override
     public int Update(TransactionTask transaction) {
         int row;
         try {
@@ -57,7 +68,7 @@ public class TransactionTaskService implements ITransactionTaskService{
             throw e;
         }
         return row;
-    }
+    }    
     
     @Override
     public int UpdateS(TransactionTask transaction) {
@@ -68,7 +79,7 @@ public class TransactionTaskService implements ITransactionTaskService{
             throw e;
         }
         return row;
-    }    
+    } 
 
     @Override
     public int Delete(String historial_id) {

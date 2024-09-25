@@ -43,6 +43,12 @@ public class TransactionTaskController {
         var result = itransactionservice.Read();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    
+    @GetMapping("/getspecific")
+    public ResponseEntity<List<TransactionTask>> getspecific() {
+        var result = itransactionservice.GetSpecific();
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
 
     @PostMapping("/update")
     public ResponseEntity<ServiceResponse> update(@RequestBody TransactionTask transaction) {
