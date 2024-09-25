@@ -32,7 +32,7 @@ public class TaskController {
     @PostMapping("/create")
     public ResponseEntity<ServiceResponse> create(@RequestBody Task task,@RequestBody TransactionTask transactiontask ){
       ServiceResponse serviceResponse = new ServiceResponse();
-      int result = iasignservice.Create(task,transactiontask);
+      int result = iasignservice.Create(task);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("Task Crete with success");

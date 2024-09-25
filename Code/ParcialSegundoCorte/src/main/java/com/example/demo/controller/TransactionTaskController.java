@@ -31,7 +31,7 @@ public class TransactionTaskController {
     @PostMapping("/create")
     public ResponseEntity<ServiceResponse> create(@RequestBody TransactionTask transaction,@RequestBody Task task ) {
         ServiceResponse serviceResponse = new ServiceResponse();
-        int result = itransactionservice.Create(transaction,task);
+        int result = itransactionservice.Create(transaction);
         if (result == 1) {
             serviceResponse.setSuccess(true);
             serviceResponse.setMessage("History task Crete with success");
