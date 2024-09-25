@@ -17,7 +17,7 @@ import com.example.demo.interfaz.ITransactionTaskService;
  */
 
 @Service
-public class TransactionService implements ITransactionTaskService{
+public class TransactionTaskService implements ITransactionTaskService{
     
     
     @Autowired
@@ -55,6 +55,17 @@ public class TransactionService implements ITransactionTaskService{
         }
         return row;
     }
+    
+    @Override
+    public int UpdateS(TransactionTask transaction) {
+        int row;
+        try {
+            row =  itransaction.UpdateS(transaction);
+        } catch (Exception e) {
+            throw e;
+        }
+        return row;
+    }    
 
     @Override
     public int Delete(String historial_id) {

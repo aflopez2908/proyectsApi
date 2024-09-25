@@ -12,30 +12,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.example.demo.interfaz.ITransactionTask;
 
-/**
- *
- * @author pipel
- */
-
 @Repository
-public class DaoImplementationTransaction implements ITransactionTask{
+public class DaoImplementationTransactionTask implements ITransactionTask{
     
     @Autowired
     private JdbcTemplate jdbctemplateT;
     
     @Override
     public int Create(TransactionTask transaction) {
-        String Query = "INSERT INTO [dbo].[Historial_Tareas] (tarea_id, cambio, fecha_cambio, usuario_id,vigente) VALUES (?, ?,?,?,?)";
-        return jdbctemplateT.update(Query, new Object[]{transaction.getHistorial_id(),transaction.getTarea_id(),transaction.getUsuario_id(),transaction.getVigente()} );
+        String Query = "INSERT INTO [dbo].[Historial_Tareas] (tarea_id, cambio, fecha_cambio, usuario_id,vigente) VALUES (?,?,?,?,?);";
+        return jdbctemplateT.update(Query, new Object[]{transaction.getTarea_id(), transaction.getCambio(),transaction.getFecha_cambio(),transaction.getUsuario_id(),transaction.getVigente()});
     }
     
     @Override
     public List<TransactionTask> Read() {
-        String Query = "select * from [dbo].[Usuarios]";
+        String Query = "select * from [dbo].[Historial_Tareas]";
         return jdbctemplateT.query(Query, BeanPropertyRowMapper.newInstance(TransactionTask.class));  
     }
-    
-    //no esta implementado
 
     @Override
     public int Update(TransactionTask transaction) {
@@ -45,14 +38,14 @@ public class DaoImplementationTransaction implements ITransactionTask{
     
     @Override
     public int UpdateS(TransactionTask transaction) {
-        String Query = "UPDATE [dbo].[Historial_Tareas] SET vigente = ? WHERE historial_id = ?;";
-        return jdbctemplateT.update(Query, new Object[]{transaction.getHistorial_id(),transaction.getTarea_id(),transaction.getUsuario_id(),transaction.getVigente()});
+        String Query = "update [dbo].[Historial_Tareas] set vigente = ? where vigente = ? and tarea_id = ?;";
+        return jdbctemplateT.update(Query, new Object[]{0,1,transaction.getTarea_id()});
     }
-    //no esta implementado
+    
     @Override
-    public int Delete(String historial_id) {
-        String Query = "DELETE FROM [dbo].[Usuarios] WHERE usuario_id = ?;";
-        return jdbctemplateT.update(Query, new Object[]{historial_id});
+    public int Delete(String tarea_id) {
+        String Query = "DELETE FROM [dbo].[Historial_Tareas] WHERE tarea_id = ?;";
+        return jdbctemplateT.update(Query, new Object[]{tarea_id});
     }   
     
     
