@@ -5,11 +5,11 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.TransactionTask;
-import com.example.demo.interfaz.ITransaction;
-import com.example.demo.interfaz.ITransactionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.demo.interfaz.ITransactionTask;
+import com.example.demo.interfaz.ITransactionTaskService;
 
 /**
  *
@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class TransactionService implements ITransactionService{
+public class TransactionService implements ITransactionTaskService{
     
     
     @Autowired
-    private ITransaction itransaction;
+    private ITransactionTask itransaction;
     
     @Override
     public int Create(TransactionTask transaction) {

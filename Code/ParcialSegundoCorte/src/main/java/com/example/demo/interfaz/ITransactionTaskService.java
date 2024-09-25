@@ -7,19 +7,15 @@ package com.example.demo.interfaz;
 import com.example.demo.entity.TransactionTask;
 import java.util.List;
 
+public interface ITransactionTaskService {
 
-/**
- *
- * @author pipel
- */
+    public int Create(TransactionTask trasaction);
 
-public interface ITransaction {
-    
-    public int Create(TransactionTask transaction);
     public List<TransactionTask> Read();
+
     public int Update(TransactionTask transaction);
+    
     public int UpdateS(TransactionTask transaction);
+
     public int Delete(String historial_id);
-    
-    
 }
