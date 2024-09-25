@@ -46,7 +46,13 @@ public class DaoImplementationTransactionTask implements ITransactionTask{
     public int Delete(String tarea_id) {
         String Query = "DELETE FROM [dbo].[Historial_Tareas] WHERE tarea_id = ?;";
         return jdbctemplateT.update(Query, new Object[]{tarea_id});
-    }   
+    }
+    
+    @Override
+    public int GetSpecific() {
+         String Query = "SELECT ht.tarea_id, ht.cambio, t.estado_id, ht.fecha_cambio, t.nombre FROM dbo.Historial_Tareas ht JOIN dbo.Tareas t ON t.estado_id = t.estado_id;";
+        return jdbctemplateT.queryForObject(Query, Integer.class);
+    }
     
     
     
