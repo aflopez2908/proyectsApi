@@ -11,5 +11,5 @@ public interface ITaskService {
     public int Create(Task task,TransactionTask transaction);
     public List<Task> Read();
     public int UpdateStateId(Task task);
-    public int Delete(int task_id);     
+    public int Delete(int task_id);  
 }
