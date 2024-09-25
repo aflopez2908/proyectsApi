@@ -4,7 +4,9 @@
  */
 package com.example.demo.service;
 
+import com.example.demo.entity.Task;
 import com.example.demo.entity.TransactionTask;
+import com.example.demo.interfaz.ITask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,11 +25,21 @@ public class TransactionTaskService implements ITransactionTaskService{
     @Autowired
     private ITransactionTask itransaction;
     
+    @Autowired
+    private ITask itask;
+    
+    
+    
     @Override
-    public int Create(TransactionTask transaction) {
+    public int Create(TransactionTask transaction, Task task) {
         int row;
+        
         try {
-            row =  itransaction.Create(transaction);
+            int createrow =  itransaction.Create(transaction);
+            int updaterow= itask.UpdateStateId(task);
+            
+            row= createrow+updaterow;
+            
         } catch (Exception e) {
             throw e;
         }
