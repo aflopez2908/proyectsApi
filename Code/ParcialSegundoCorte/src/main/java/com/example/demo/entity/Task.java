@@ -3,16 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.example.demo.entity;
-
 import lombok.Data;
 
-/**
- *
- * @author pipel
- */
 @Data
-public class Task {
-    
+public class Task {    
     private int tarea_id;
     private int proyecto_id;
     private String nombre;
