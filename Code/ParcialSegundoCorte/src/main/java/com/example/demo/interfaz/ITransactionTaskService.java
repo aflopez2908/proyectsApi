@@ -4,12 +4,13 @@
  */
 package com.example.demo.interfaz;
 
+import com.example.demo.entity.Task;
 import com.example.demo.entity.TransactionTask;
 import java.util.List;
 
 public interface ITransactionTaskService {
 
-    public int Create(TransactionTask trasaction);
+    public int Create(TransactionTask transaction, Task task);
 
     public List<TransactionTask> Read();
 
