@@ -5,6 +5,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Task;
+import com.example.demo.entity.TransactionTask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,15 @@ public class TaskService implements ITaskService {
         int row;
         try {
             int rowasign = iasign.Create(task);
+            if (rowasign == 1){
+              TransactionTask transaction = new TransactionTask();
+              transaction.setTarea_id(task.getTarea_id());
+              transaction.setCambio("Tarea Creada");
+              transaction.setFecha_cambio(task.getFecha_inicio());
+              transaction.setUsuario_id(task.getAsignado_a());
+              transaction.setVigente(1);  
+                System.out.println("El objeto es:" + transaction);
+            }
             row = rowasign;
         } catch (Exception e) {
             throw e;
