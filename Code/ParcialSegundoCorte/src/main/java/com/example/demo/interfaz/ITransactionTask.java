@@ -19,5 +19,5 @@ public interface ITransactionTask {
 
     public int Delete(String historial_id);
     
-    public int GetSpecific();
+    public List<TransactionTask> GetSpecific();
 }

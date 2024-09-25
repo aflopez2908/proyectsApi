@@ -53,7 +53,6 @@ public class TaskService implements ITaskService {
               transaction.setUsuario_id(task.getAsignado_a());
               transaction.setVigente(1);
               rowmodify= itransaction.Create(transaction);
-                System.out.println("El objeto es:" + transaction);
             }
             row = rowasign + rowmodify;
         } catch (Exception e) {

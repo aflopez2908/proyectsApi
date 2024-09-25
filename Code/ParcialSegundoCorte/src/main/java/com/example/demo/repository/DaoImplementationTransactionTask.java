@@ -49,9 +49,9 @@ public class DaoImplementationTransactionTask implements ITransactionTask{
     }
     
     @Override
-    public int GetSpecific() {
-         String Query = "SELECT ht.tarea_id, ht.cambio, t.estado_id, ht.fecha_cambio, t.nombre FROM dbo.Historial_Tareas ht JOIN dbo.Tareas t ON t.estado_id = t.estado_id;";
-        return jdbctemplateT.queryForObject(Query, Integer.class);
+    public List<TransactionTask> GetSpecific() {
+         String Query = "SELECT ht.historial_id,ht.tarea_id, ht.cambio, t.estado_id, ht.fecha_cambio, t.nombre FROM dbo.Historial_Tareas ht JOIN dbo.Tareas t ON t.estado_id = t.estado_id;";
+        return jdbctemplateT.query(Query, BeanPropertyRowMapper.newInstance(TransactionTask.class)); 
     }
     
     

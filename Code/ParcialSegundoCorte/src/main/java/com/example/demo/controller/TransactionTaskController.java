@@ -47,7 +47,7 @@ public class TransactionTaskController {
     @GetMapping("/getspecific")
     public ResponseEntity<List<TransactionTask>> getspecific() {
         var result = itransactionservice.GetSpecific();
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/update")

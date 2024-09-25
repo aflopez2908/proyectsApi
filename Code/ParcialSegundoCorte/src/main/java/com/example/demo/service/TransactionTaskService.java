@@ -49,14 +49,14 @@ public class TransactionTaskService implements ITransactionTaskService{
     }
     
     @Override
-    public int GetSpecific() {
-        int row;
+    public List<TransactionTask> GetSpecific() {
+        List<TransactionTask> list;
         try {
-            row =  itransaction.GetSpecific();
+            list =  itransaction.GetSpecific();
         } catch (Exception e) {
             throw e;
         }
-        return row;
+        return list;
     }
     
     @Override
