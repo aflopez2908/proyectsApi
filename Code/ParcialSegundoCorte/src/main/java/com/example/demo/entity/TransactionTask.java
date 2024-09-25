@@ -7,19 +7,12 @@ package com.example.demo.entity;
 import java.util.Date;
 import lombok.Data;
 
-/**
- *
- * @author pipel
- */
-
 @Data
-public class Transaction {
-    
+public class TransactionTask {
     private String historial_id;
     private int tarea_id;
     private String cambio;
     private Date fecha_cambio;
     private int usuario_id;
     private int vigente;
-    
 }

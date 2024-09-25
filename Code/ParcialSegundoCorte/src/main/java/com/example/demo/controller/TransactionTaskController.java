@@ -5,7 +5,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
-import com.example.demo.entity.Transaction;
+import com.example.demo.entity.TransactionTask;
 import com.example.demo.interfaz.ITransactionService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class TransactionTaskController {
     private ITransactionService itransactionservice;
 
     @PostMapping("/create")
-    public ResponseEntity<ServiceResponse> create(@RequestBody Transaction transaction) {
+    public ResponseEntity<ServiceResponse> create(@RequestBody TransactionTask transaction) {
         ServiceResponse serviceResponse = new ServiceResponse();
         int result = itransactionservice.Create(transaction);
         if (result == 1) {
@@ -39,13 +39,13 @@ public class TransactionTaskController {
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<Transaction>> read() {
+    public ResponseEntity<List<TransactionTask>> read() {
         var result = itransactionservice.Read();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/update")
-    public ResponseEntity<ServiceResponse> update(@RequestBody Transaction transaction) {
+    public ResponseEntity<ServiceResponse> update(@RequestBody TransactionTask transaction) {
         ServiceResponse serviceResponse = new ServiceResponse();
         int result = itransactionservice.Update(transaction);
         if (result == 1) {

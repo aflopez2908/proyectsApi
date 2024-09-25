@@ -4,7 +4,7 @@
  */
 package com.example.demo.service;
 
-import com.example.demo.entity.Transaction;
+import com.example.demo.entity.TransactionTask;
 import com.example.demo.interfaz.ITransaction;
 import com.example.demo.interfaz.ITransactionService;
 import java.util.List;
@@ -24,7 +24,7 @@ public class TransactionService implements ITransactionService{
     private ITransaction itransaction;
     
     @Override
-    public int Create(Transaction transaction) {
+    public int Create(TransactionTask transaction) {
         int row;
         try {
             row =  itransaction.Create(transaction);
@@ -35,8 +35,8 @@ public class TransactionService implements ITransactionService{
     }
     
     @Override
-    public List<Transaction> Read() {
-        List<Transaction> list;
+    public List<TransactionTask> Read() {
+        List<TransactionTask> list;
         try {
             list = itransaction.Read();
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class TransactionService implements ITransactionService{
     }
     
     @Override
-    public int Update(Transaction transaction) {
+    public int Update(TransactionTask transaction) {
         int row;
         try {
             row =  itransaction.Update(transaction);
