@@ -5,6 +5,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.ServiceResponse;
+import com.example.demo.entity.ChangeStateTask;
 import com.example.demo.entity.TransactionTask;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,4 +73,16 @@ public class TransactionTaskController {
         return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
     }
 
+    @PostMapping("/ChangeState")
+    public ResponseEntity<ServiceResponse> create(@RequestBody ChangeStateTask changestatetask) {
+        ServiceResponse serviceResponse = new ServiceResponse();
+        int result = itransactionservice.ChageStatusTask(changestatetask);
+        if (result == 1) {
+            serviceResponse.setSuccess(true);
+            serviceResponse.setMessage("Chage State Succesful");
+        }
+        return new ResponseEntity<>(serviceResponse, HttpStatus.OK);
+    }    
+    
+    
 }

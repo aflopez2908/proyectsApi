@@ -46,4 +46,11 @@ public class DAOImplementationTask implements ITask{
     
     return jdbctemplate.queryForObject(Query, Integer.class);
 }
+
+    @Override
+    public List<Task> ReadSpecificTask(int task_id) {
+        String Query = "select * from [dbo].[Tareas] where tarea_id = ?;";
+//        return jdbctemplate.query(Query, task_id);    
+         return jdbctemplate.query(Query, new Object[]{task_id}, BeanPropertyRowMapper.newInstance(Task.class));    
+    }
 }

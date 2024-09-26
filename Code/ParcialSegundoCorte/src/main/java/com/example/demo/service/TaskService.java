@@ -52,9 +52,11 @@ public class TaskService implements ITaskService {
               transaction.setFecha_cambio(task.getFecha_inicio());
               transaction.setUsuario_id(task.getAsignado_a());
               transaction.setVigente(1);
+              transaction.setEstado_id(task.getEstado_id());
               rowmodify= itransaction.Create(transaction);
             }
-            row = rowasign + rowmodify;
+//            row = rowasign + rowmodify;
+            row = rowasign;
         } catch (Exception e) {
             throw e;
         }
@@ -92,5 +94,16 @@ public class TaskService implements ITaskService {
             throw e;
         }
         return row;
+    }
+
+    @Override
+    public List<Task> ReadSpecificTask(int task_id) {
+       List<Task> list;
+        try {
+            list = iasign.ReadSpecificTask(task_id);
+        } catch (Exception e) {
+            throw e;
+        }
+        return list;
     }
 }

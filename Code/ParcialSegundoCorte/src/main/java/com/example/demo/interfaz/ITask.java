@@ -12,4 +12,5 @@ public interface ITask {
     public int UpdateStateId(Task task);
     public int Delete(int task_id); 
     public int GetMax();
+    public List<Task> ReadSpecificTask(int task_id);
 }
