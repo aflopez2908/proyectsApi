@@ -38,6 +38,18 @@ public class TransactionTaskService implements ITransactionTaskService {
         }
         return row;
     }
+    
+    @Override
+    public int updateVigenciaByTareaId( int id) {
+        int row;
+        try {
+            int createrow = itransaction.updateVigenciaByTareaId(id);
+            row = createrow;
+        } catch (Exception e) {
+            throw e;
+        }
+        return row;
+    }
 
     public int CreateAfter(TransactionTask transaction) {
         int row;
@@ -110,32 +122,48 @@ public class TransactionTaskService implements ITransactionTaskService {
     }
 
     @Override
-    public int ChageStatusTask(ChangeStateTask changestatetask) {
-        int row = 1;
-        int rowmodify = 0;
-        try {
-            List<Task> listaNombres = itask.ReadSpecificTask(changestatetask.getTarea_id());
-            if (listaNombres != null && !listaNombres.isEmpty()) {
-                // La lista tiene valores
-                System.out.println("La lista tiene " + listaNombres.size() + " elementos.");
- 
-              TransactionTask transaction = new TransactionTask();
-              transaction.setTarea_id(changestatetask.getTarea_id());
-              transaction.setCambio("Cambio Tarea");
-              transaction.setFecha_cambio("2024-09-25 05:21:53.310");
-              transaction.setUsuario_id(Character.toString('1'));
-              transaction.setVigente(1);
-              transaction.setEstado_id(changestatetask.getEstado_id());
-              rowmodify= itransaction.Create(transaction);
-             
+public int ChageStatusTask(ChangeStateTask changestatetask) {
+    int row = 1;
+    int rowmodify = 0;
+    try {
+        List<Task> listaNombres = itask.ReadSpecificTask(changestatetask.getTarea_id());
+        if (listaNombres != null && !listaNombres.isEmpty()) {
+            // La lista tiene valores
+            System.out.println("La lista tiene " + listaNombres.size() + " elementos.");
+
+            // Actualiza todas las tareas con el mismo tarea_id a 'vigente = 0'
+            int var= itransaction.updateVigenciaByTareaId(changestatetask.getTarea_id());
+
+            TransactionTask transaction = new TransactionTask();
+            transaction.setTarea_id(changestatetask.getTarea_id());
+            transaction.setCambio("Cambio Tarea");
+            transaction.setFecha_cambio("2024-09-25 05:21:53.310");
+            transaction.setUsuario_id(Character.toString('1'));
+            transaction.setVigente(1);
+
+            // Verificar si el estado_id es impar
+            if (changestatetask.getEstado_id() % 2 != 0) {
+                // Si es impar, enviar un mensaje y detener el proceso de transacción
+                System.out.println("El estado_id es impar y no se puede realizar el cambio.");
+                return row;  // Salir de la función sin modificar nada
             } else {
-                // La lista está vacía o es nula
-                System.out.println("La lista no tiene valores.");
+                // Si es par, continuar con la transacción
+                transaction.setEstado_id(changestatetask.getEstado_id());
+                rowmodify = itransaction.Create(transaction);
             }
-        } catch (Exception e) {
-            throw e;
+
+        } else {
+            // La lista está vacía o es nula
+            System.out.println("La lista no tiene valores.");
         }
-        return row;
+    } catch (Exception e) {
+        throw e;
     }
+    return row;
+}
+
+    
+
+
 
 }

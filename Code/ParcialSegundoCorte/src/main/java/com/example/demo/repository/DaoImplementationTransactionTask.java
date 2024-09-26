@@ -53,5 +53,11 @@ public class DaoImplementationTransactionTask implements ITransactionTask {
         String Query = "SELECT ht.historial_id,ht.tarea_id, ht.cambio, t.estado_id, ht.fecha_cambio, t.nombre FROM dbo.Historial_Tareas ht JOIN dbo.Tareas t ON t.estado_id = t.estado_id;";
         return jdbctemplateT.query(Query, BeanPropertyRowMapper.newInstance(TransactionTask.class));
     }
+    
+    @Override
+    public int updateVigenciaByTareaId(int tareaId) {
+    String query = "UPDATE dbo.Historial_Tareas SET vigente = 0 WHERE tarea_id = ?";
+    return jdbctemplateT.update(query, tareaId);
+}
 
 }
