@@ -21,6 +21,7 @@ public interface ITransactionTask {
     
     public List<TransactionTask> GetSpecific();
     
+    
     public int updateVigenciaByTareaId(int tareaId);
     
 }
