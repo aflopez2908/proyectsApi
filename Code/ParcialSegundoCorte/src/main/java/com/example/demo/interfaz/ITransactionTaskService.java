@@ -23,5 +23,6 @@ public interface ITransactionTaskService {
     public List<TransactionTask> GetSpecific();
     
     public int ChageStatusTask(ChangeStateTask changestatetask);
+    public int updateVigenciaByTareaId(int tareaId);
     
 }
