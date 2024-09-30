@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author Seidor Colombia
  */
-@Repository("")
+@Repository("RepositoryTiposRecurso")
 public class RepositoryTiposRecurso {
     
 }
