@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-class EvaluacionesIndicadoresId implements Serializable{
+public class EvaluacionesIndicadoresId implements Serializable{
     private Integer evaluacionId;
     private Integer indicadorId;    
 }
