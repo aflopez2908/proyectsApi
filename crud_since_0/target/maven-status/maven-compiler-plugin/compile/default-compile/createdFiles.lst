@@ -1,5 +1,0 @@
-com\crud_since_0\demo\service\StudentService.class
-com\crud_since_0\demo\repository\StudentRepository.class
-com\crud_since_0\demo\controller\StudentController.class
-com\crud_since_0\demo\CrudApplication.class
-com\crud_since_0\demo\entity\Student.class
