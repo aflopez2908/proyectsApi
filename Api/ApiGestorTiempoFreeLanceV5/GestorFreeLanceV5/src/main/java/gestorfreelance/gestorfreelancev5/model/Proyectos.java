@@ -55,3 +55,5 @@ private LocalDateTime fechaInicio;
     @JoinColumn(name = "estado_id")
     private EstadosProyecto estado;    
 }
+
+
