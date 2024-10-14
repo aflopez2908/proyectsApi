@@ -1,5 +1,6 @@
 package gestorfreelance.gestorfreelancev5.services;
 
+import gestorfreelance.gestorfreelancev5.model.EstadosTarea;
 import gestorfreelance.gestorfreelancev5.model.Tareas;
 import gestorfreelance.gestorfreelancev5.repository.TareasRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class TaskService {
     }
 
     public Tareas createTarea(Tareas tarea) {
+
         return tareasRepository.save(tarea);
     }
     public Tareas updateTarea(Integer tareaId, Tareas tareaActualizada) {

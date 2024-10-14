@@ -1,4 +1,4 @@
-package gestorfreelance.gestorfreelancev5.services;
+package gestorfreelance.gestorfreelancev5.exceptions;
 
 /**
  *

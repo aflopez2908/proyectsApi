@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.services;
 
 
+import gestorfreelance.gestorfreelancev5.exceptions.ResourceNotFoundException;
 import gestorfreelance.gestorfreelancev5.model.EstadosProyecto;
 import gestorfreelance.gestorfreelancev5.model.ProyectoEstado;
 import gestorfreelance.gestorfreelancev5.model.Proyectos;
