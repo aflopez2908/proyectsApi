@@ -33,6 +33,11 @@ public class ProyectoEstado {
 
     private String comentario;
 
+
+
+
+
+
     public Long getProyectoEstadoId() {
         return proyectoEstadoId;
     }

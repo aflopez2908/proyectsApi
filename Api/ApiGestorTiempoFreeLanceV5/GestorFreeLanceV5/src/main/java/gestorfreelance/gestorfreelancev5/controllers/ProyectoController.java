@@ -31,7 +31,7 @@ public class ProyectoController {
     @Autowired
     private ProyectoService proyectoService;
 
-
+    //lectura de todos los proyectos funcionando
     @GetMapping({"/read"})
     public ResponseEntity<List<Proyectos>> getAllProyectos() {
         List<Proyectos> proyectos = proyectoService.getAllProyectos();
@@ -44,6 +44,9 @@ public class ProyectoController {
         Proyectos nuevoProyecto = proyectoService.crearProyecto(proyecto);
         return new ResponseEntity<>(nuevoProyecto, HttpStatus.CREATED);
     }
+
+
+
 
     // Obtener un proyecto por ID
     @GetMapping("/{id}")

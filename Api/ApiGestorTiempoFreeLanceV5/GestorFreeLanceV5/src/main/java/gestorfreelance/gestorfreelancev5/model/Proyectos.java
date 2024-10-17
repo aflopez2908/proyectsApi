@@ -40,11 +40,6 @@ public class Proyectos {
     @JoinColumn(name = "cliente_id")
     private Clientes cliente;
 
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaInicio;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaFin;*/
 @Column(name = "fecha_inicio")
 private LocalDateTime fechaInicio;
 

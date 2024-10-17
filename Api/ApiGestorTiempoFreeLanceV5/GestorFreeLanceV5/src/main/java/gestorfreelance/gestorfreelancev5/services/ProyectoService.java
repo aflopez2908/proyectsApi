@@ -32,46 +32,47 @@ public class ProyectoService {
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
 
+    //buscar todos los proyectos
+    public List<Proyectos> getAllProyectos() {
+        return proyectoRepository.findAll();
+    }
+
+
+
     // Crear un nuevo proyecto
     public Proyectos crearProyecto(Proyectos proyecto) {
         // Guardar el proyecto
         Proyectos nuevoProyecto = proyectoRepository.save(proyecto);
-
-        // Registrar el estado inicial en la tabla transaccional
-        registrarEstado(nuevoProyecto, proyecto.getEstado(), "Proyecto creado");
-
         return nuevoProyecto;
     }
 
+
     // Actualizar un proyecto (incluido el cambio de estado)
     public Proyectos actualizarProyecto(Long proyectoId, Proyectos detallesProyecto) {
+        // Buscar el proyecto existente por su ID
         Proyectos proyectoExistente = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyectoId));
 
-        // Actualizar detalles del proyecto
+        // Actualizar los detalles del proyecto existente con los datos del proyecto proporcionado
         proyectoExistente.setNombre(detallesProyecto.getNombre());
         proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
+        proyectoExistente.setCliente(detallesProyecto.getCliente());
+        proyectoExistente.setFechaInicio(detallesProyecto.getFechaInicio());
+        proyectoExistente.setFechaFin(detallesProyecto.getFechaFin());
+        proyectoExistente.setEstado(detallesProyecto.getEstado());
 
-        // Verificar si el estado ha cambiado
-        if (!proyectoExistente.getEstado().getEstadoId().equals(detallesProyecto.getEstado().getEstadoId())) {
-            proyectoExistente.setEstado(detallesProyecto.getEstado());
+        // Guardar el proyecto actualizado en la base de datos
+        Proyectos proyectoActualizado = proyectoRepository.save(proyectoExistente);
 
-            // Registrar el cambio de estado
-            registrarEstado(proyectoExistente, detallesProyecto.getEstado(), "Estado cambiado por actualización");
-        }
-
-        return proyectoRepository.save(proyectoExistente);
+        // Retornar el proyecto actualizado
+        return proyectoActualizado;
     }
 
     // Eliminar un proyecto
     public void eliminarProyecto(Long proyectoId) {
         Proyectos proyecto = proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
-
         proyectoRepository.delete(proyecto);
-
-        // Registrar el estado de eliminación
-        registrarEstado(proyecto, proyecto.getEstado(), "Proyecto eliminado");
     }
 
     // Obtener un proyecto por ID
@@ -82,9 +83,7 @@ public class ProyectoService {
 
 
 
-    public List<Proyectos> getAllProyectos() {
-        return proyectoRepository.findAll();
-    }
+
 
     // Método para registrar un cambio de estado en la tabla transaccional
     private void registrarEstado(Proyectos proyecto, EstadosProyecto estado, String comentario) {
