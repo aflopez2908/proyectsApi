@@ -46,9 +46,6 @@ private LocalDateTime fechaInicio;
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "estado_id")
-    private EstadosProyecto estado;    
 }
 
 

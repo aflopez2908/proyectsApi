@@ -12,10 +12,6 @@ public interface ProyectosRepository extends JpaRepository<Proyectos, Long> {
     //get by nombre para no tener proyectos con nombre repetidos
     Proyectos findByNombre(String nombre);
 
-    //encontrar el estado por el id del proyecto
-    @Query("SELECT p.estado FROM Proyectos p WHERE p.proyectoId = :proyectoId")
-    Proyectos findEstadoByProyectoId(@Param("proyectoId") Long proyectoId);
-
 
     @Query("SELECT p.cliente FROM Proyectos p WHERE p.proyectoId = :proyectoId")
     Clientes findClienteByProyectoId(@Param("proyectoId") Long proyectoId);

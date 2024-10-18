@@ -36,15 +36,33 @@ public class ProyectoService {
     public List<Proyectos> getAllProyectos() {
         return proyectoRepository.findAll();
     }
+    // Obtener un proyecto por ID
+    public Proyectos obtenerProyectoPorId(Long proyectoId) {
+        return proyectoRepository.findById(proyectoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
+    }
 
 
 
-    // Crear un nuevo proyecto
+    // Crear un nuevo proyecto (listo para pruebas)
     public Proyectos crearProyecto(Proyectos proyecto) {
-        // Guardar el proyecto
+
+        //validacion de existencia del proyecto
+        Proyectos proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
+        if (proyectoExistente != null) {
+            throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
+        }
+        //definir el estado automaticamente en 1
+        EstadosProyecto estadosProyecto= estadoProyectoRepository.findById(1);
+        //guaardar el proyecto
         Proyectos nuevoProyecto = proyectoRepository.save(proyecto);
+        //registro del estado con vigencia 1
+        registrarEstado(proyecto,estadosProyecto, "Creacion del proyecto",1);
         return nuevoProyecto;
     }
+
+
+    //cambiar el estado al asignar, al concluir y a eliminar
 
 
     // Actualizar un proyecto (incluido el cambio de estado)
@@ -59,7 +77,6 @@ public class ProyectoService {
         proyectoExistente.setCliente(detallesProyecto.getCliente());
         proyectoExistente.setFechaInicio(detallesProyecto.getFechaInicio());
         proyectoExistente.setFechaFin(detallesProyecto.getFechaFin());
-        proyectoExistente.setEstado(detallesProyecto.getEstado());
 
         // Guardar el proyecto actualizado en la base de datos
         Proyectos proyectoActualizado = proyectoRepository.save(proyectoExistente);
@@ -69,30 +86,28 @@ public class ProyectoService {
     }
 
     // Eliminar un proyecto
+    //problemas con la eliminacion debido a las llaves foraneas
     public void eliminarProyecto(Long proyectoId) {
         Proyectos proyecto = proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
         proyectoRepository.delete(proyecto);
     }
 
-    // Obtener un proyecto por ID
-    public Proyectos obtenerProyectoPorId(Long proyectoId) {
-        return proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
-    }
+
+
 
 
 
 
 
     // Método para registrar un cambio de estado en la tabla transaccional
-    private void registrarEstado(Proyectos proyecto, EstadosProyecto estado, String comentario) {
+    private void registrarEstado(Proyectos proyecto, EstadosProyecto estado, String comentario, int vigencia) {
         ProyectoEstado proyectoEstado = new ProyectoEstado();
         proyectoEstado.setProyecto(proyecto);
         proyectoEstado.setEstado(estado);
-        proyectoEstado.setFechaCambio((java.sql.Date) new Date());
+        proyectoEstado.setFechaCambio(new java.sql.Date(System.currentTimeMillis()));
         proyectoEstado.setComentario(comentario);
-
+        proyectoEstado.setVigencia(vigencia);
         proyectoEstadoRepository.save(proyectoEstado);
     }
 }
