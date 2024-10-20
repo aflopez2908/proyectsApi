@@ -38,10 +38,6 @@ public class Tarea {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @ManyToOne
-    @JoinColumn(name = "estado_id")
-    private EstadoTarea estado;
-
     @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
     @Column(name = "fecha_fin")

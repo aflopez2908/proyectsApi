@@ -12,6 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository("TareasRepository")
 public interface TareasRepository extends JpaRepository<Tarea, Integer> {
     List<Tarea> findByProyecto(Proyecto proyecto);
-    List<Tarea> findByEstado(EstadoTarea estado);
     List<Tarea> findByNombreContaining(String nombre);
 }

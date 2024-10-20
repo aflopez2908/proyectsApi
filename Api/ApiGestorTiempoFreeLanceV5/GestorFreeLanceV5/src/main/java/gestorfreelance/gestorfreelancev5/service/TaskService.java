@@ -31,7 +31,6 @@ public class TaskService {
             tarea.setDescripcion(tareaActualizada.getDescripcion());
             tarea.setFechaInicio(tareaActualizada.getFechaInicio());
             tarea.setFechaFin(tareaActualizada.getFechaFin());
-            tarea.setEstado(tareaActualizada.getEstado());
             tarea.setProyecto(tareaActualizada.getProyecto());
             tarea.setAsignadoA(tareaActualizada.getAsignadoA());
             return tareasRepository.save(tarea);
