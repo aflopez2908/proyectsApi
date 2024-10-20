@@ -28,7 +28,7 @@ public class LoginAuditoria {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuarios usuario;
+    private Usuario usuario;
 
     @Column(name = "fecha_login")
     private LocalDateTime fechaLogin;

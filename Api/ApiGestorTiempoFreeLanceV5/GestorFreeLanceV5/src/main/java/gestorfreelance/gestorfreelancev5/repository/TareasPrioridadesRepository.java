@@ -1,16 +1,16 @@
 package gestorfreelance.gestorfreelancev5.repository;
 
-import gestorfreelance.gestorfreelancev5.model.PrioridadesTarea;
-import gestorfreelance.gestorfreelancev5.model.Tareas;
-import gestorfreelance.gestorfreelancev5.model.TareasPrioridades;
-import gestorfreelance.gestorfreelancev5.model.TareasPrioridadesId;
+import gestorfreelance.gestorfreelancev5.model.PrioridadTarea;
+import gestorfreelance.gestorfreelancev5.model.Tarea;
+import gestorfreelance.gestorfreelancev5.model.TareaPrioridad;
+import gestorfreelance.gestorfreelancev5.model.TareaPrioridadId;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository("TareasPrioridadesRepository")
-public interface TareasPrioridadesRepository extends JpaRepository<TareasPrioridades, TareasPrioridadesId> {
-    List<TareasPrioridades> findByTarea(Tareas tarea);
-    List<TareasPrioridades> findByPrioridad(PrioridadesTarea prioridad);
+public interface TareasPrioridadesRepository extends JpaRepository<TareaPrioridad, TareaPrioridadId> {
+    List<TareaPrioridad> findByTarea(Tarea tarea);
+    List<TareaPrioridad> findByPrioridad(PrioridadTarea prioridad);
 }

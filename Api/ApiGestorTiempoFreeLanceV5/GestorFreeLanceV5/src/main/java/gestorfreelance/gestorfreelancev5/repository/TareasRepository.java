@@ -1,16 +1,17 @@
 package gestorfreelance.gestorfreelancev5.repository;
 
-import gestorfreelance.gestorfreelancev5.model.EstadosTarea;
-import gestorfreelance.gestorfreelancev5.model.Proyectos;
-import gestorfreelance.gestorfreelancev5.model.Tareas;
+import gestorfreelance.gestorfreelancev5.model.EstadoTarea;
+import gestorfreelance.gestorfreelancev5.model.Proyecto;
+import gestorfreelance.gestorfreelancev5.model.Tarea;
+
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository("TareasRepository")
-public interface TareasRepository extends JpaRepository<Tareas, Integer> {
-    List<Tareas> findByProyecto(Proyectos proyecto);
-    List<Tareas> findByEstado(EstadosTarea estado);
-    List<Tareas> findByNombreContaining(String nombre);
+public interface TareasRepository extends JpaRepository<Tarea, Integer> {
+    List<Tarea> findByProyecto(Proyecto proyecto);
+    List<Tarea> findByEstado(EstadoTarea estado);
+    List<Tarea> findByNombreContaining(String nombre);
 }

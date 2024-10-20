@@ -29,7 +29,7 @@ public class Facturacion {
 
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
-    private Proyectos proyecto;
+    private Proyecto proyecto;
 
     @Column
     private Double monto;

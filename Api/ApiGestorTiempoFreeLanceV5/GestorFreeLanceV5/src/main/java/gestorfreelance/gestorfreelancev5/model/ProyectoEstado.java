@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 import java.sql.Date;
 
 @Entity
-@Table(name = "Proyecto_Estados")
+@Table(name = "Proyecto_Estado")
 public class ProyectoEstado {
 
     @Id
@@ -19,11 +19,11 @@ public class ProyectoEstado {
 
     @ManyToOne
     @JoinColumn(name = "proyectoId")
-    private Proyectos proyecto;
+    private Proyecto proyecto;
 
     @ManyToOne
     @JoinColumn(name = "estadoId")
-    private EstadosProyecto estado;
+    private EstadoProyecto estado;
 
     private Date fechaCambio;
 
@@ -48,19 +48,19 @@ public class ProyectoEstado {
         this.proyectoEstadoId = proyectoEstadoId;
     }
 
-    public Proyectos getProyecto() {
+    public Proyecto getProyecto() {
         return proyecto;
     }
 
-    public void setProyecto(Proyectos proyecto) {
+    public void setProyecto(Proyecto proyecto) {
         this.proyecto = proyecto;
     }
 
-    public EstadosProyecto getEstado() {
+    public EstadoProyecto getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadosProyecto estado) {
+    public void setEstado(EstadoProyecto estado) {
         this.estado = estado;
     }
 

@@ -1,7 +1,7 @@
 package gestorfreelance.gestorfreelancev5.repository;
 
-import gestorfreelance.gestorfreelancev5.model.Ciudades;
-import gestorfreelance.gestorfreelancev5.model.Paises;
+import gestorfreelance.gestorfreelancev5.model.Ciudad;
+import gestorfreelance.gestorfreelancev5.model.Pais;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * @author Seidor Colombia
  */
 @Repository("CiudadesRepository")
-public interface CiudadesRepository extends JpaRepository<Ciudades, Integer> {
-    List<Ciudades> findByNombre(String nombre);
-    List<Ciudades> findByPais(Paises pais);
+public interface CiudadesRepository extends JpaRepository<Ciudad, Integer> {
+    List<Ciudad> findByNombre(String nombre);
+    List<Ciudad> findByPais(Pais pais);
 }
