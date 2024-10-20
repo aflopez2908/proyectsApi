@@ -24,14 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author pipel
  */
 @RestController
-@RequestMapping({"api/proyectosss"})
+@RequestMapping({"api/proyectos"})
 
 public class ProyectoController {
 
     @Autowired
     private ProyectoService proyectoService;
 
-
+    //lectura de todos los proyectos funcionando
     @GetMapping({"/read"})
     public ResponseEntity<List<Proyectos>> getAllProyectos() {
         List<Proyectos> proyectos = proyectoService.getAllProyectos();
@@ -40,10 +40,21 @@ public class ProyectoController {
 
     // Crear un nuevo proyecto
     @PostMapping
-    public ResponseEntity<Proyectos> crearProyecto(@RequestBody Proyectos proyecto) {
-        Proyectos nuevoProyecto = proyectoService.crearProyecto(proyecto);
-        return new ResponseEntity<>(nuevoProyecto, HttpStatus.CREATED);
+    public ResponseEntity<?> crearProyecto(@RequestBody Proyectos proyecto) {
+        try {
+            Proyectos nuevoProyecto = proyectoService.crearProyecto(proyecto);
+            return new ResponseEntity<>(nuevoProyecto, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            // Maneja errores generales
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
+
+
 
     // Obtener un proyecto por ID
     @GetMapping("/{id}")
@@ -65,6 +76,7 @@ public class ProyectoController {
         proyectoService.eliminarProyecto(id);
         return ResponseEntity.noContent().build();
     }
+
 }
 
 

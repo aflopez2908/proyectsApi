@@ -33,6 +33,17 @@ public class ProyectoEstado {
 
     private String comentario;
 
+    private int vigencia;
+
+
+    public int getVigencia() {
+        return vigencia;
+    }
+
+    public void setVigencia(int vigencia) {
+        this.vigencia = vigencia;
+    }
+
     public Long getProyectoEstadoId() {
         return proyectoEstadoId;
     }

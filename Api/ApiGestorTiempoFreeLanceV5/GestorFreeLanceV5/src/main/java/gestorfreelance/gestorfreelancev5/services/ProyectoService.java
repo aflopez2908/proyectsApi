@@ -16,6 +16,10 @@ import java.util.List;
 
 
 
+/**
+ *
+ * @author pipel
+ */
 @Service
 public class ProyectoService {
 
@@ -28,37 +32,11 @@ public class ProyectoService {
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
 
-    public Proyectos crearProyecto(Proyectos proyecto) {
-        Proyectos nuevoProyecto = proyectoRepository.save(proyecto);
-        registrarEstado(nuevoProyecto, proyecto.getEstado(), "Proyecto creado");
-
-        return nuevoProyecto;
+    //buscar todos los proyectos
+    public List<Proyectos> getAllProyectos() {
+        return proyectoRepository.findAll();
     }
-
-    public Proyectos actualizarProyecto(Long proyectoId, Proyectos detallesProyecto) {
-        Proyectos proyectoExistente = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
-
-        proyectoExistente.setNombre(detallesProyecto.getNombre());
-        proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
-
-        if (!proyectoExistente.getEstado().getEstadoId().equals(detallesProyecto.getEstado().getEstadoId())) {
-            proyectoExistente.setEstado(detallesProyecto.getEstado());
-            registrarEstado(proyectoExistente, detallesProyecto.getEstado(), "Estado cambiado por actualización");
-        }
-
-        return proyectoRepository.save(proyectoExistente);
-    }
-
-    public void eliminarProyecto(Long proyectoId) {
-        Proyectos proyecto = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
-
-        proyectoRepository.delete(proyecto);
-
-        registrarEstado(proyecto, proyecto.getEstado(), "Proyecto eliminado");
-    }
-
+    // Obtener un proyecto por ID
     public Proyectos obtenerProyectoPorId(Long proyectoId) {
         return proyectoRepository.findById(proyectoId)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
@@ -66,16 +44,70 @@ public class ProyectoService {
 
 
 
-    public List<Proyectos> getAllProyectos() {
-        return proyectoRepository.findAll();
+    // Crear un nuevo proyecto (listo para pruebas)
+    public Proyectos crearProyecto(Proyectos proyecto) {
+
+        //validacion de existencia del proyecto
+        Proyectos proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
+        if (proyectoExistente != null) {
+            throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
+        }
+        //definir el estado automaticamente en 1
+        EstadosProyecto estadosProyecto= estadoProyectoRepository.findById(1);
+        //guaardar el proyecto
+        Proyectos nuevoProyecto = proyectoRepository.save(proyecto);
+        //registro del estado con vigencia 1
+        registrarEstado(proyecto,estadosProyecto, "Creacion del proyecto",1);
+        return nuevoProyecto;
     }
-    private void registrarEstado(Proyectos proyecto, EstadosProyecto estado, String comentario) {
+
+
+    //cambiar el estado al asignar, al concluir y a eliminar
+
+
+    // Actualizar un proyecto (incluido el cambio de estado)
+    public Proyectos actualizarProyecto(Long proyectoId, Proyectos detallesProyecto) {
+        // Buscar el proyecto existente por su ID
+        Proyectos proyectoExistente = proyectoRepository.findById(proyectoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyectoId));
+
+        // Actualizar los detalles del proyecto existente con los datos del proyecto proporcionado
+        proyectoExistente.setNombre(detallesProyecto.getNombre());
+        proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
+        proyectoExistente.setCliente(detallesProyecto.getCliente());
+        proyectoExistente.setFechaInicio(detallesProyecto.getFechaInicio());
+        proyectoExistente.setFechaFin(detallesProyecto.getFechaFin());
+
+        // Guardar el proyecto actualizado en la base de datos
+        Proyectos proyectoActualizado = proyectoRepository.save(proyectoExistente);
+
+        // Retornar el proyecto actualizado
+        return proyectoActualizado;
+    }
+
+    // Eliminar un proyecto
+    //problemas con la eliminacion debido a las llaves foraneas
+    public void eliminarProyecto(Long proyectoId) {
+        Proyectos proyecto = proyectoRepository.findById(proyectoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
+        proyectoRepository.delete(proyecto);
+    }
+
+
+
+
+
+
+
+
+    // Método para registrar un cambio de estado en la tabla transaccional
+    private void registrarEstado(Proyectos proyecto, EstadosProyecto estado, String comentario, int vigencia) {
         ProyectoEstado proyectoEstado = new ProyectoEstado();
         proyectoEstado.setProyecto(proyecto);
         proyectoEstado.setEstado(estado);
-        proyectoEstado.setFechaCambio((java.sql.Date) new Date());
+        proyectoEstado.setFechaCambio(new java.sql.Date(System.currentTimeMillis()));
         proyectoEstado.setComentario(comentario);
-
+        proyectoEstado.setVigencia(vigencia);
         proyectoEstadoRepository.save(proyectoEstado);
     }
 }
