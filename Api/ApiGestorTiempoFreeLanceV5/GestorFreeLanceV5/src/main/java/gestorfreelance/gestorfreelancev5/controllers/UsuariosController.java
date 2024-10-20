@@ -22,22 +22,10 @@ public class UsuariosController {
     @Autowired
     private RolesService rolesService;
 
-/*    @PostMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuarios usuario) {
-        *//*try {
-           // Roles rol = rolesService.obtenerPorId(usuario.getId());
-*//**//*            if (rol == null) {
-                return ResponseEntity.badRequest().body("Error: No se encontró el rol con ID: " + usuario.getRol() + usuario.getId());
-            }*//**//*
-        //    Usuarios nuevoUsuario = usuariosService.crearUsuario(usuario, rol);
-         //   return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al crear el usuario: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: " + e.getMessage());
-        }*//*
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: " + e.getMessage());
-    }*/
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: ");
+    }
 
     @GetMapping
     public ResponseEntity<List<Usuarios>> obtenerTodos() {

@@ -45,7 +45,4 @@ public class Usuarios {
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaCreacion;    */
-    
 }

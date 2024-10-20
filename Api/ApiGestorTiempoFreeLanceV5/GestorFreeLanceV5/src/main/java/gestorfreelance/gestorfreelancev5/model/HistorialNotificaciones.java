@@ -1,8 +1,6 @@
 package gestorfreelance.gestorfreelancev5.model;
 
 import jakarta.persistence.*;
-
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,8 +28,6 @@ public class HistorialNotificaciones {
     @JoinColumn(name = "usuario_id")
     private Usuarios usuario;
 
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaEnvio;*/
     @Column(name = "fecha_envio")
     private LocalDateTime fechaEnvio;
 }

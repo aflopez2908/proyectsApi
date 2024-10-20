@@ -33,7 +33,6 @@ public class Recursos {
     @JoinColumn(name = "tipo_id")
     private TiposRecurso tipo;
 
-    //@Column(precision = 10, scale = 2)
     @Column
     private Double costo;
 

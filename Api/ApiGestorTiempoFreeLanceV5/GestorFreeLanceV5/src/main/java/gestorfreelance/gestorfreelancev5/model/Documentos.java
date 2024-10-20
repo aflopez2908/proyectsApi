@@ -8,9 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,9 +38,6 @@ public class Documentos {
 
     @Column(name = "fecha_subida")
     private LocalDateTime fechaSubida;
-
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaSubida;*/
 
     @ManyToOne
     @JoinColumn(name = "subido_por")

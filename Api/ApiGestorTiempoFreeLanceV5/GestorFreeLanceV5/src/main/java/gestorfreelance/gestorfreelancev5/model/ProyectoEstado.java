@@ -9,10 +9,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.sql.Date;
 
-/**
- *
- * @author pipel
- */
 @Entity
 @Table(name = "Proyecto_Estados")
 public class ProyectoEstado {

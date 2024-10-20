@@ -33,8 +33,6 @@ public class EvaluacionesIndicadores {
     @MapsId("indicadorId")
     @JoinColumn(name = "indicador_id")
     private IndicadoresDesempeno indicador;
-
-    //@Column(precision = 10, scale = 2)
     @Column
     private Double valor;    
 }

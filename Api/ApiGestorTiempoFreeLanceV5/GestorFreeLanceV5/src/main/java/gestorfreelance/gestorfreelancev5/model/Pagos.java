@@ -8,11 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.sql.Date;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,12 +31,8 @@ public class Pagos {
     @JoinColumn(name = "factura_id")
     private Facturacion factura;
 
-    //@Column(precision = 10, scale = 2)
     @Column
     private Double monto;
-
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaPago;*/
 
     @Column(name = "fecha_pago")
     private LocalDateTime fechaPago;

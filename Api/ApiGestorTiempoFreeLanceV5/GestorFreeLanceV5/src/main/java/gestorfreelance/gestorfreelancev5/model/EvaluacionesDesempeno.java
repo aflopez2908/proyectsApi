@@ -8,9 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,9 +32,6 @@ public class EvaluacionesDesempeno {
 
     @Column(name = "fecha_evaluacion")
     private LocalDateTime fechaEvaluacion;
-
-  /*  @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaEvaluacion;*/
 
     @Column(columnDefinition = "TEXT")
     private String resultado;    

@@ -8,14 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import java.sql.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 
@@ -24,9 +22,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="Historial_Tareas")
+@Table(name = "Historial_Tareas")
 public class HistorialTareas {
-  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID historialId;
 
@@ -37,12 +35,11 @@ public class HistorialTareas {
     @Column(columnDefinition = "TEXT")
     private String cambio;
 
-/*    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaCambio;*/
-@Column(name = "fecha_cambio")
-private LocalDateTime fechaCambio;
+
+    @Column(name = "fecha_cambio")
+    private LocalDateTime fechaCambio;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuarios usuario;   
+    private Usuarios usuario;
 }

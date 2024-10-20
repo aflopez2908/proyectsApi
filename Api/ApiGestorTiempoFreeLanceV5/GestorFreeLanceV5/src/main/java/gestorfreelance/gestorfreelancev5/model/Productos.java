@@ -29,7 +29,6 @@ public class Productos {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    //@Column(precision = 10, scale = 2)
     @Column
     private Double costo;
 }
