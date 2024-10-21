@@ -42,4 +42,12 @@ public class HistorialTarea {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+
+    @Column(columnDefinition = "vigente")
+    private Integer vigente ;
+
+    @ManyToOne
+    @JoinColumn(name = "estado_id")
+    private EstadoTarea estadoTarea;
+
 }

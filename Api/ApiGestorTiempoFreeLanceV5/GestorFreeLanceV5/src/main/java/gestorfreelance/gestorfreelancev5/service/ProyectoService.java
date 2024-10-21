@@ -1,6 +1,5 @@
 package gestorfreelance.gestorfreelancev5.service;
 
-
 import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
 import gestorfreelance.gestorfreelancev5.model.EstadoProyecto;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
@@ -27,9 +26,9 @@ public class ProyectoService {
     public List<Proyecto> getAllProyectos() {
         return proyectoRepository.findAll();
     }
-    public Proyecto obtenerProyectoPorId(Long proyectoId) {
-        return proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
+    public Proyecto obtenerProyectoPorId(Long proyecto_id) {
+        return proyectoRepository.findById(proyecto_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
     }
     public Proyecto crearProyecto(Proyecto proyecto) {
         Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
@@ -41,9 +40,9 @@ public class ProyectoService {
         registrarEstado(proyecto, estadoProyecto, "Creacion del proyecto",1);
         return nuevoProyecto;
     }
-    public Proyecto actualizarProyecto(Long proyectoId, Proyecto detallesProyecto) {
-        Proyecto proyectoExistente = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyectoId));
+    public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
+        Proyecto proyectoExistente = proyectoRepository.findById(proyecto_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyecto_id));
         proyectoExistente.setNombre(detallesProyecto.getNombre());
         proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
         proyectoExistente.setCliente(detallesProyecto.getCliente());
@@ -52,9 +51,9 @@ public class ProyectoService {
         Proyecto proyectoActualizado = proyectoRepository.save(proyectoExistente);
         return proyectoActualizado;
     }
-    public void eliminarProyecto(Long proyectoId) {
-        Proyecto proyecto = proyectoRepository.findById(proyectoId)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyectoId));
+    public void eliminarProyecto(Long proyecto_id) {
+        Proyecto proyecto = proyectoRepository.findById(proyecto_id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
         proyectoRepository.delete(proyecto);
     }
     private void registrarEstado(Proyecto proyecto, EstadoProyecto estado, String comentario, int vigencia) {

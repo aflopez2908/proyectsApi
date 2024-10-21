@@ -40,6 +40,7 @@ public class Tarea {
 
     @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
+
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 

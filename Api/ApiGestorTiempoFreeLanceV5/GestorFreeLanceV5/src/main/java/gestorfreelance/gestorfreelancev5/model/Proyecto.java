@@ -1,20 +1,13 @@
 package gestorfreelance.gestorfreelancev5.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 
 @Data
@@ -44,6 +37,16 @@ public class Proyecto {
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
+    @OneToMany(mappedBy = "proyecto")
+    private Collection<Tarea> tarea;
+
+    public Collection<Tarea> getTarea() {
+        return tarea;
+    }
+
+    public void setTarea(Collection<Tarea> tarea) {
+        this.tarea = tarea;
+    }
 }
 
 

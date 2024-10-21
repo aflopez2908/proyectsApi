@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping({"api/proyectos"})
+@RequestMapping({"/api/v1/proyecto"})
 
 public class ProyectoController {
 
@@ -23,9 +23,9 @@ public class ProyectoController {
     private ProyectoService proyectoService;
 
     @GetMapping({"/read"})
-    public ResponseEntity<List<Proyecto>> getAllProyectos() {
-        List<Proyecto> proyectos = proyectoService.getAllProyectos();
-        return new ResponseEntity<>(proyectos, HttpStatus.OK);
+    public ResponseEntity<List<Proyecto>> getAllProyecto() {
+        List<Proyecto> proyecto = proyectoService.getAllProyectos();
+        return new ResponseEntity<>(proyecto, HttpStatus.OK);
     }
 
     @PostMapping
