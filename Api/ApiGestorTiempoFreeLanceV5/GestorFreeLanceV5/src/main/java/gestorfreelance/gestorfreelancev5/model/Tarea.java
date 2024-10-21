@@ -44,7 +44,4 @@ public class Tarea {
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "asignado_a")
-    private Usuario asignadoA;
 }

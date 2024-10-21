@@ -1,12 +1,11 @@
 package gestorfreelance.gestorfreelancev5.service;
 
 import gestorfreelance.gestorfreelancev5.exception.ProyectoNotFoundException;
-import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
-import gestorfreelance.gestorfreelancev5.model.Proyecto;
-import gestorfreelance.gestorfreelancev5.model.Tarea;
+import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.HistorialTareasRepository;
 import gestorfreelance.gestorfreelancev5.repository.ProyectosRepository;
 import gestorfreelance.gestorfreelancev5.repository.TareasRepository;
+import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +22,8 @@ public class TaskService {
     private HistorialTareasRepository historialTareasRepository;
     @Autowired
     private ProyectosRepository proyectosRepository;
+    @Autowired
+    private UsuariosRepository usuariosRepository;
 
     public List<Tarea> getAllTareas() {
         return tareasRepository.findAll();
@@ -39,8 +40,15 @@ public class TaskService {
 
     public HistorialTarea createhistorialTarea(Tarea tarea) {
         HistorialTarea historialTarea = new HistorialTarea();
+        historialTarea.setTarea(tarea);
         historialTarea.setCambio("New Task");
         historialTarea.setFechaCambio(LocalDateTime.now());
+        Usuario usuario = usuariosRepository.findByUsuarioId(1);
+        historialTarea.setUsuario(usuario);
+        historialTarea.setVigente(1);
+        EstadoTarea estadoTarea = new EstadoTarea();
+        estadoTarea.setEstadoId(1);
+        historialTarea.setEstadoTarea(estadoTarea);
        return historialTareasRepository.save(historialTarea);
     }
 

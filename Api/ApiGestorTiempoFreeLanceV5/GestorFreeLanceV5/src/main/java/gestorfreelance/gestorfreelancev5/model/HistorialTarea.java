@@ -35,7 +35,6 @@ public class HistorialTarea {
     @Column(columnDefinition = "TEXT")
     private String cambio;
 
-
     @Column(name = "fecha_cambio")
     private LocalDateTime fechaCambio;
 

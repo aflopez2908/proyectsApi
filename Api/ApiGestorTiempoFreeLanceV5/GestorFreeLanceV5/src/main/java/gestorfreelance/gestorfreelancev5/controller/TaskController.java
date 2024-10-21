@@ -1,5 +1,6 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
+import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class TaskController {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Tarea creada exitosamente");
             response.put("tareaId", tareaCreada.getTareaId().toString());
+            HistorialTarea historialtarea = tareasService.createhistorialTarea(tareaCreada);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (RuntimeException e) {
             Map<String, String> errorResponse = new HashMap<>();
