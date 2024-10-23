@@ -1,30 +1,45 @@
 package gestorfreelance.gestorfreelancev5.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
 public class EmailService {
-private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-//@Autowired
-    private final JavaMailSender mailSender;
-    public EmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    private final JavaMailSender javaMailSender;
+
+    public EmailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
     }
 
-    public void sendSimpleMessage(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
+    public String sendEmailwithAttachment(String to, String subject, String body) {
         try {
-            mailSender.send(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al enviar un email:"+e.getMessage());
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+
+            messageHelper.setFrom("ingescato@gmail.com");
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(body);
+
+            // Adjuntar archivo si es necesario
+
+            javaMailSender.send(message);
+
+            return "Correo enviado exitosamente con archivo adjunto";
+
+        } catch (MessagingException | MailException e) {
+            // Log the exception or handle it as needed
+            e.printStackTrace(); // Log the exception to console for now
+
+            return "Error al enviar el correo con archivo adjunto";
         }
     }
 }
