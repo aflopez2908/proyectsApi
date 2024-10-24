@@ -1,9 +1,8 @@
 package gestorfreelance.gestorfreelancev5.service;
 
+import gestorfreelance.gestorfreelancev5.exception.CorreoUsuarioNoDisponibleException;
 import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
-import gestorfreelance.gestorfreelancev5.model.EstadoProyecto;
-import gestorfreelance.gestorfreelancev5.model.Proyecto;
-import gestorfreelance.gestorfreelancev5.model.ProyectoEstado;
+import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.EstadosProyectoRepository;
 import gestorfreelance.gestorfreelancev5.repository.ProyectoEstadoRepository;
 import gestorfreelance.gestorfreelancev5.repository.ProyectosRepository;
@@ -14,14 +13,20 @@ import java.util.List;
 @Service
 public class ProyectoService {
 
+
     @Autowired
     private ProyectosRepository proyectoRepository;
+
+
 
     @Autowired
     private EstadosProyectoRepository estadoProyectoRepository;
 
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     public List<Proyecto> getAllProyectos() {
         return proyectoRepository.findAll();
@@ -30,6 +35,8 @@ public class ProyectoService {
         return proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
     }
+
+    //hace falta definir las horas para tambien agregar horas
     public Proyecto crearProyecto(Proyecto proyecto) {
         Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
         if (proyectoExistente != null) {
@@ -37,6 +44,18 @@ public class ProyectoService {
         }
         EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(1);
         Proyecto nuevoProyecto = proyectoRepository.save(proyecto);
+        Cliente cliente = proyectoRepository.findClienteByProyectoId(proyecto.getProyectoId().longValue());
+        System.out.println(cliente);
+        String subject = "Creacion de un nuevo proyecto";
+        String body = "Hola " + cliente.getNombre() + ",\n\n" +
+                "Te informamos la creacion de un nuevo proyecto:\n" +
+                "Nombre de proyecto: " + proyecto.getNombre() + "\n" +
+                "descripcion: " + proyecto.getDescripcion() + "\n\n" +
+                "Si tienes alguna pregunta o problema, no dudes en contactarnos.\n\n" +
+                "Saludos,\n" +
+                "El equipo de soporte";
+
+        enviarCorreoBienvenida(cliente,subject,body);
         registrarEstado(proyecto, estadoProyecto, "Creacion del proyecto",1);
         return nuevoProyecto;
     }
@@ -65,5 +84,18 @@ public class ProyectoService {
         proyectoEstado.setVigencia(vigencia);
         proyectoEstadoRepository.save(proyectoEstado);
     }
+
+
+    private void enviarCorreoBienvenida(Cliente cliente, String subject, String body) throws CorreoUsuarioNoDisponibleException {
+        String to = cliente.getEmail();
+        if (to == null || to.isEmpty()) {
+            throw new CorreoUsuarioNoDisponibleException("El correo del usuario no está disponible para enviar la notificación.");
+        }
+
+        emailService.sendEmailwithAttachment(to, subject, body);
+    }
+
+
+
 }
 
