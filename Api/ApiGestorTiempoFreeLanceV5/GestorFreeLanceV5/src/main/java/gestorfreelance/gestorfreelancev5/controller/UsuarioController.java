@@ -23,7 +23,7 @@ public class UsuarioController {
     @Autowired
     private RolService rolService;
 
-    @PostMapping("/create")
+    @PostMapping("/createUser")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
         System.out.println(usuario);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: ");
