@@ -1,12 +1,7 @@
 package gestorfreelance.gestorfreelancev5.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.sql.Date;
 
 @Entity
@@ -15,16 +10,18 @@ public class ProyectoEstado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "proyecto_estado_id")
     private Long proyectoEstadoId;
 
     @ManyToOne
-    @JoinColumn(name = "proyectoId")
+    @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
 
     @ManyToOne
-    @JoinColumn(name = "estadoId")
+    @JoinColumn(name = "estado_id")
     private EstadoProyecto estado;
 
+    @Column(name = "fecha_cambio")
     private Date fechaCambio;
 
     private String comentario;

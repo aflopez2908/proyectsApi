@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class EstadoProyecto {
 @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "estado_id")
     private Integer estadoId;
     
     @Column(nullable = false, length = 50)

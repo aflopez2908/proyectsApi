@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 public class Ciudad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ciudad_id")
     private Integer ciudadId;
     
     @Column(nullable = false, length = 100)

@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 public class Proyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "proyecto_id")
     private Integer proyectoId;
 
     @Column(nullable = false, length = 100)

@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 public class Tarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "tarea_id")
     private Integer tareaId;
 
     @ManyToOne

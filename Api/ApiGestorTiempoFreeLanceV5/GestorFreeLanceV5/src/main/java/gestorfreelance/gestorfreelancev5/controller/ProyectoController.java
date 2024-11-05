@@ -1,5 +1,9 @@
 package gestorfreelance.gestorfreelancev5.controller;
 import java.util.List;
+
+import gestorfreelance.gestorfreelancev5.exception.ProyectoNoEncontradoException;
+import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
+import gestorfreelance.gestorfreelancev5.model.EstadoProyecto;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +26,21 @@ public class ProyectoController {
     @Autowired
     private ProyectoService proyectoService;
 
-    @GetMapping({"/read"})
+    @GetMapping
     public ResponseEntity<List<Proyecto>> getAllProyecto() {
-        List<Proyecto> proyecto = proyectoService.getAllProyectos();
-        return new ResponseEntity<>(proyecto, HttpStatus.OK);
+        try {
+            List<Proyecto> proyectos = proyectoService.getAllProyectos();
+            return new ResponseEntity<>(proyectos, HttpStatus.OK);
+        } catch (Exception ex) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
+
+
+    //get las tareas que pertenecen al proyecto id
+    
 
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody Proyecto proyecto) {
@@ -42,20 +56,68 @@ public class ProyectoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Proyecto> obtenerProyectoPorId(@PathVariable Long id) {
-        Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
-        return ResponseEntity.ok(proyecto);
+        try {
+            Proyecto proyecto = proyectoService.obtenerProyectoPorId(id);
+            return ResponseEntity.ok(proyecto); // 200 OK
+        } catch (ProyectoNoEncontradoException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null); // 404 Not Found
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null); // 500 Internal Server Error
+        }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<Proyecto> actualizarProyecto(@PathVariable Long id, @RequestBody Proyecto proyectoDetalles) {
-        Proyecto proyectoActualizado = proyectoService.actualizarProyecto(id, proyectoDetalles);
-        return ResponseEntity.ok(proyectoActualizado);
+        try {
+            Proyecto proyectoActualizado = proyectoService.actualizarProyecto(id, proyectoDetalles);
+            return ResponseEntity.ok(proyectoActualizado);
+        } catch (ProyectoNoEncontradoException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
+    //actualizacion de la tabla de estados
+    @PutMapping("/estado/{id}")
+    public ResponseEntity<?> cambioEstado(@PathVariable int id, @RequestBody int estado) {
+        try {
+            Proyecto proyectoActualizado = proyectoService.cambioEstado(id, estado);
+            return ResponseEntity.ok(proyectoActualizado);
+        } catch (ProyectoTerminadoException ex) {
+
+            return ResponseEntity.badRequest().body("Error: " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+
+            return ResponseEntity.badRequest().body("Error: " + ex.getMessage());
+        } catch (Exception ex) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado: " + ex.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProyecto(@PathVariable Long id) {
-        proyectoService.eliminarProyecto(id);
-        return ResponseEntity.noContent().build();
+        try {
+            proyectoService.eliminarProyecto(id);
+            return ResponseEntity.noContent().build();
+        } catch (ProyectoNoEncontradoException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().build();
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .build();
+        }
     }
 }
 

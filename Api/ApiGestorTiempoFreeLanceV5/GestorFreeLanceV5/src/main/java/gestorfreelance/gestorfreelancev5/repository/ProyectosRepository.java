@@ -18,5 +18,8 @@ public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
     @Query("SELECT p.cliente FROM Proyecto p WHERE p.proyectoId = :proyectoId")
     Cliente findClienteByProyectoId(@Param("proyectoId") Long proyectoId);
 
+    long count(); // Total de proyectos
+
+
 
 }
