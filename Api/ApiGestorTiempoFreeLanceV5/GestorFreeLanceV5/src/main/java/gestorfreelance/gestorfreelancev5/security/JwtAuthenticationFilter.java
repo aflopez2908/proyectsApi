@@ -31,6 +31,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
+        System.out.println("Autentificacion filter");
         Usuario usuario = null;
         String nombre = "";
         String contraseña = "";
@@ -45,10 +46,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        System.out.println(nombre +" " + contraseña);
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(nombre, contraseña);
 
+        System.out.println("Test" + getAuthenticationManager().authenticate(authenticationToken));
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -57,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
-
+        System.out.println("Autentificacion Succesful");
         User user = (User) authResult.getPrincipal();
         String token = jwtUtils.generateAccesToken(user.getUsername());
 

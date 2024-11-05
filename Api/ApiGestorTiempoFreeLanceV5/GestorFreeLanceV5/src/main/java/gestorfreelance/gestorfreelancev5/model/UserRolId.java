@@ -13,7 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
-public class UserRoleId implements Serializable {
+public class UserRolId implements Serializable {
     private static final long serialVersionUID = -8075772688175838797L;
     @NotNull
     @Column(name = "rol_id", nullable = false)
@@ -27,7 +27,7 @@ public class UserRoleId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        UserRoleId entity = (UserRoleId) o;
+        UserRolId entity = (UserRolId) o;
         return Objects.equals(this.rolId, entity.rolId) &&
                 Objects.equals(this.userId, entity.userId);
     }

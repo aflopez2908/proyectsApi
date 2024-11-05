@@ -44,9 +44,8 @@ public class UsuarioService {
         return usuariosRepository.save(usuario);
     }
 
-    public Usuario crearUsuario(Usuario usuario, Rol rol) {
-        //usuario.setRol(rol);
-        return guardarUsuario(usuario);
+    public Usuario crearUsuario(Usuario usuario) {
+        return usuariosRepository.save(usuario);
     }
 
     public void eliminarUsuario(Integer id) {
