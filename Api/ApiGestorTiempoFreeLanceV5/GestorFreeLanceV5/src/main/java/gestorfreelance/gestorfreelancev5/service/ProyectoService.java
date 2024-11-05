@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.service;
 
 import gestorfreelance.gestorfreelancev5.exception.CorreoUsuarioNoDisponibleException;
+import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
 import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
 import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.EstadosProyectoRepository;
@@ -17,8 +18,6 @@ public class ProyectoService {
     @Autowired
     private ProyectosRepository proyectoRepository;
 
-
-
     @Autowired
     private EstadosProyectoRepository estadoProyectoRepository;
 
@@ -28,24 +27,29 @@ public class ProyectoService {
     @Autowired
     private EmailService emailService;
 
+
+
+
     public List<Proyecto> getAllProyectos() {
         return proyectoRepository.findAll();
     }
+
+
     public Proyecto obtenerProyectoPorId(Long proyecto_id) {
         return proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
     }
 
-    //hace falta definir las horas para tambien agregar horas
+
     public Proyecto crearProyecto(Proyecto proyecto) {
         Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
         if (proyectoExistente != null) {
             throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
         }
+        //falta insertar el numero de horas
         EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(1);
         Proyecto nuevoProyecto = proyectoRepository.save(proyecto);
         Cliente cliente = proyectoRepository.findClienteByProyectoId(proyecto.getProyectoId().longValue());
-        System.out.println(cliente);
         String subject = "Creacion de un nuevo proyecto";
         String body = "Hola " + cliente.getNombre() + ",\n\n" +
                 "Te informamos la creacion de un nuevo proyecto:\n" +
@@ -59,8 +63,36 @@ public class ProyectoService {
         registrarEstado(proyecto, estadoProyecto, "Creacion del proyecto",1);
         return nuevoProyecto;
     }
+
+    public Proyecto cambioEstado(int id,int estado) {
+        Proyecto proyecto= proyectoRepository.findByProyectoId(id);
+        EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(estado);
+        boolean consulta =proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(proyecto.getProyectoId().longValue());
+        if(consulta == true) {
+            throw new ProyectoTerminadoException("El proyecto ya fue terminado y no puede cambiar de estado");
+        }
+        proyectoEstadoRepository.actualizarVigencia((long) id);
+        registrarEstado(proyecto, estadoProyecto, "actualizacion",1);
+        return proyecto;
+
+    }
+
+
+
+
+    //al asignarlo se debe definir el programador asignado
+    // un programador puede tener varios proyectos y los proyectos pueden tener varios progrmadors
+        //se debe crear una tabla de proyectos asignados
+
+
     public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
-        Proyecto proyectoExistente = proyectoRepository.findById(proyecto_id)
+        Proyecto proyecto = proyectoRepository.findById(proyecto_id).orElseThrow();
+        Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
+        if (proyectoExistente != null) {
+            throw new IllegalArgumentException("El nombre ya esta asignado a otro proyecto");
+        }
+
+        proyectoExistente = proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyecto_id));
         proyectoExistente.setNombre(detallesProyecto.getNombre());
         proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
@@ -70,11 +102,13 @@ public class ProyectoService {
         Proyecto proyectoActualizado = proyectoRepository.save(proyectoExistente);
         return proyectoActualizado;
     }
+
     public void eliminarProyecto(Long proyecto_id) {
         Proyecto proyecto = proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
         proyectoRepository.delete(proyecto);
     }
+
     private void registrarEstado(Proyecto proyecto, EstadoProyecto estado, String comentario, int vigencia) {
         ProyectoEstado proyectoEstado = new ProyectoEstado();
         proyectoEstado.setProyecto(proyecto);
@@ -95,6 +129,26 @@ public class ProyectoService {
         emailService.sendEmailwithAttachment(to, subject, body);
     }
 
+
+    public ProyectoEstadisticas obtenerEstadisticas() {
+        long totalProyectos = proyectoRepository.count();
+        long proyectosActivos = proyectoRepository.countByEstado(1L); // Ajusta según tus estados
+        long proyectosFinalizados = proyectoRepository.countByEstado(2L);
+
+        List<Proyecto> proyectos = proyectoRepository.findAll();
+        double duracionPromedio = proyectos.isEmpty() ? 0 :
+                proyectos.stream()
+                        .mapToDouble(proyecto -> calcularDuracion(proyecto))
+                        .average()
+                        .orElse(0);
+
+        return new ProyectoEstadisticas(totalProyectos, proyectosActivos, proyectosFinalizados, duracionPromedio);
+    }
+
+    private double calcularDuracion(Proyecto proyecto) {
+        // Lógica para calcular la duración de un proyecto (por ejemplo, entre fecha de inicio y fecha de fin)
+        return 0; // Implementar según tu lógica de duración
+    }
 
 
 }
