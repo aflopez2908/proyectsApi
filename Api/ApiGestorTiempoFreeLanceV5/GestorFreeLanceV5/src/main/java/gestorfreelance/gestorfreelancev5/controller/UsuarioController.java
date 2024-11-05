@@ -2,6 +2,7 @@ package gestorfreelance.gestorfreelancev5.controller;
 
 import gestorfreelance.gestorfreelancev5.DTO.CreateUserDTO;
 import gestorfreelance.gestorfreelancev5.model.*;
+import gestorfreelance.gestorfreelancev5.repository.RolesRepository;
 import gestorfreelance.gestorfreelancev5.service.RolService;
 import gestorfreelance.gestorfreelancev5.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,14 @@ public class UsuarioController {
     @Autowired
     private RolService rolService;
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
+    public UsuarioController(PasswordEncoder passwordEncoder, UsuarioService usuarioService) {
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioService = usuarioService;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createUser")
@@ -51,10 +61,21 @@ public class UsuarioController {
     public ResponseEntity<?> createUser2(@Valid @RequestBody CreateUserDTO createUserDTO) {
         try {
             Set<Rol> rol = createUserDTO.getRol().stream()
-                    .map(role -> Rol.builder().nombre(ERol.valueOf(role)).build()).collect(Collectors.toSet());
+                    .map(roleName -> rolesRepository.findByNombre(ERol.valueOf(roleName))
+                            .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado")))
+                    .collect(Collectors.toSet());
 
-            Usuario usuario = Usuario.builder().nombre(createUserDTO.getNombre()).contraseña(passwordEncoder.encode(createUserDTO.getContraseña()))
-                    .email(createUserDTO.getEmail()).rol(rol).build();
+/*            Set<Rol>    rol = createUserDTO.getRol().stream()
+                    .map(role -> Rol.builder()
+                            .nombre(ERol.valueOf(role)).
+                            build()).collect(Collectors.toSet());*/
+
+            Usuario usuario = Usuario.builder()
+                    .nombre(createUserDTO.getNombre())
+                    .contraseña(passwordEncoder.encode(createUserDTO.getContraseña()))
+                    .email(createUserDTO.getEmail())
+                    .fechaCreacion(LocalDateTime.now())
+                    .rol(rol).build();
 
             usuarioService.saveUsuario(usuario);
             Map<String, String> response = new HashMap<>();
@@ -110,7 +131,7 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/buscar/rol")
+/*    @GetMapping("/buscar/rol")
     public ResponseEntity<?> buscarPorRol(@RequestParam Integer rolId) {
         try {
             Rol rol = rolService.obtenerPorId(rolId);
@@ -126,6 +147,6 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al buscar usuarios por rol: " + e.getMessage());
         }
-    }
+    }*/
 
 }

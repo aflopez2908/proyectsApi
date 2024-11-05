@@ -15,9 +15,9 @@ import java.util.Optional;
         @Autowired
         private RolesRepository rolesRepository;
 
-        public Rol obtenerPorId(Integer rolId) {
+/*        public Rol obtenerPorId(Integer rolId) {
             Optional<Rol> rolOptional = rolesRepository.findById(rolId);
             return rolOptional.orElse(null); // Retorna el rol si existe, o null si no se encuentra
-        }
+        }*/
 
     }
