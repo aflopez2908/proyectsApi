@@ -4,6 +4,7 @@ import gestorfreelance.gestorfreelancev5.model.Rol;
 import gestorfreelance.gestorfreelancev5.model.Usuario;
 import gestorfreelance.gestorfreelancev5.service.RolService;
 import gestorfreelance.gestorfreelancev5.service.UsuarioService;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/usuarios")
+@RequestMapping("/api/v1/user")
 public class UsuarioController {
 
     @Autowired
@@ -24,12 +25,13 @@ public class UsuarioController {
 
     @PostMapping("/create")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
+        System.out.println(usuario);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: ");
     }
 
     @GetMapping
     public ResponseEntity<List<Usuario>> obtenerTodos() {
-        List<Usuario> usuarios = usuarioService.obtenerTodos();
+        List<Usuario> usuarios = usuarioService.getAllUsuarios();
         return ResponseEntity.ok(usuarios);
     }
 

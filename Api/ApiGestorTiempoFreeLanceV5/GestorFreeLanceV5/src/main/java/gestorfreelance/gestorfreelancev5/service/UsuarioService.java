@@ -14,7 +14,7 @@ public class UsuarioService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
-    public List<Usuario> obtenerTodos() {
+    public List<Usuario> getAllUsuarios() {
         return usuariosRepository.findAll();
     }
 
@@ -35,11 +35,11 @@ public class UsuarioService {
             throw new IllegalArgumentException("La contraseña es obligatoria.");
         }
 
-        String rolNombre = usuario.getRol().getNombre();
+/*        String rolNombre = usuario.getRol().getNombre();
         if ("COORDINADOR".equals(rolNombre)) {
         } else if ("DESARROLLADOR".equals(rolNombre)) {
         } else if ("CLIENTE".equals(rolNombre)) {
-        }
+        }*/
 
         return usuariosRepository.save(usuario);
     }
