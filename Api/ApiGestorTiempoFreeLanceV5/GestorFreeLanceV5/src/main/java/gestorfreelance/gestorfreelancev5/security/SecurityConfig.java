@@ -32,15 +32,13 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
-
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
-
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/createUser","/api/v1/user","/api/v1/task","/api/v1/user/createUser").permitAll();
+                    auth.requestMatchers("/createUser", "/api/v1/user", "/api/v1/task", "/api/v1/user/createUser").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
@@ -62,5 +60,4 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
-
 }
