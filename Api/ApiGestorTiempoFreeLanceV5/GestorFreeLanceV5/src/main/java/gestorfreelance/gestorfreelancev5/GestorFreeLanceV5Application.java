@@ -20,6 +20,7 @@ public class GestorFreeLanceV5Application {
 	public static void main(String[] args) {
 		SpringApplication.run(GestorFreeLanceV5Application.class, args);
 
+
 	}
 
 }
