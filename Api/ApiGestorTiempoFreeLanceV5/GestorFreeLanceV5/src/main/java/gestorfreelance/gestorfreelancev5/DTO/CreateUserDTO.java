@@ -1,0 +1,25 @@
+package gestorfreelance.gestorfreelancev5.DTO;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Set;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CreateUserDTO {
+    @Email
+    @NotBlank
+    private String email;
+
+    @NotBlank
+    private String nombre;
+
+    @NotBlank
+    private String contraseña;
+    private Set<String> rol;
+}

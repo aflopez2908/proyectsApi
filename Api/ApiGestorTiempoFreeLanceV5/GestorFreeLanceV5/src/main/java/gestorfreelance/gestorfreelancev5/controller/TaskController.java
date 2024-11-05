@@ -6,6 +6,7 @@ import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +21,11 @@ public class TaskController {
     private TaskService tareasService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Tarea> getAllTareas() {
         return tareasService.getAllTareas();
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createTarea(@RequestBody Tarea tarea) {
         System.out.println("Task controller: " + tarea.toString());
@@ -42,24 +44,5 @@ public class TaskController {
     }
 }
 
-/*    public Tarea createTarea(@RequestBody Tarea tarea)
-    {
-        System.out.println("Task controller:" + tarea.toString());
-        try {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Tarea creada exitosamente");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-        return tareasService.createTarea(tarea);
-    }*/
-
-/*    @PutMapping("/{id}")
-    public Tarea updateTarea(@PathVariable Integer id, @RequestBody Tarea tarea) {
-        return tareasService.updateTarea(id, tarea);
-    }*/
 

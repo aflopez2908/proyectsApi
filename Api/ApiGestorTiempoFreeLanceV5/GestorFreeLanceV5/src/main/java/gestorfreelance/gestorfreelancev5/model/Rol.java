@@ -1,11 +1,6 @@
 package gestorfreelance.gestorfreelancev5.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +16,10 @@ import lombok.NoArgsConstructor;
 public class Rol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer rolId;    
-    @Column(nullable = false)
-    private String nombre;   
+    @Column(name = "rol_id")
+    private Integer rolId;
+
+  //  @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ERol nombre;
 }
