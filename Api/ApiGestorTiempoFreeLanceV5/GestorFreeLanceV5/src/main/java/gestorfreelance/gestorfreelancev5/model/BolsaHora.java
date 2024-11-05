@@ -32,12 +32,13 @@ public class BolsaHora {
     @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "horas_totales")
     private Integer horasTotales;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "horas_usadas")
     private Integer horasUsadas;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "horas_restantes")
+
     private Integer horasRestantes;   
 }

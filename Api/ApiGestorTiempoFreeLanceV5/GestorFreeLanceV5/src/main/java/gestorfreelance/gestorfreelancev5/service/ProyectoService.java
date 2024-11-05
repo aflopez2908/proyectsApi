@@ -1,13 +1,13 @@
 package gestorfreelance.gestorfreelancev5.service;
 
+import gestorfreelance.gestorfreelancev5.DTO.ProyectoDTO;
 import gestorfreelance.gestorfreelancev5.exception.CorreoUsuarioNoDisponibleException;
 import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
 import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
 import gestorfreelance.gestorfreelancev5.model.*;
-import gestorfreelance.gestorfreelancev5.repository.EstadosProyectoRepository;
-import gestorfreelance.gestorfreelancev5.repository.ProyectoEstadoRepository;
-import gestorfreelance.gestorfreelancev5.repository.ProyectosRepository;
+import gestorfreelance.gestorfreelancev5.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -23,6 +23,12 @@ public class ProyectoService {
 
     @Autowired
     private ProyectoEstadoRepository proyectoEstadoRepository;
+
+    @Autowired
+    private UsuariosRepository usuariosRepository;
+
+    @Autowired
+    private BolsaHorasRepository bolsaHorasRepository;
 
     @Autowired
     private EmailService emailService;
@@ -41,26 +47,43 @@ public class ProyectoService {
     }
 
 
-    public Proyecto crearProyecto(Proyecto proyecto) {
-        Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
+    @PreAuthorize("hasRole('ADMIN')")
+
+    public Proyecto crearProyecto(ProyectoDTO proyecto) {
+        Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getProyecto().getNombre());
         if (proyectoExistente != null) {
             throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
         }
         //falta insertar el numero de horas
         EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(1);
-        Proyecto nuevoProyecto = proyectoRepository.save(proyecto);
-        Cliente cliente = proyectoRepository.findClienteByProyectoId(proyecto.getProyectoId().longValue());
+        Proyecto nuevoProyecto = proyectoRepository.save(proyecto.getProyecto());
+        Cliente cliente = proyectoRepository.findClienteByProyectoId(proyecto.getProyecto().getProyectoId().longValue());
+
+        Usuario miusuario= usuariosRepository.findMatchClient(proyecto.getProyecto().getProyectoId().longValue());
+        System.out.println(miusuario);
+
+        // Crear y guardar la BolsaHora
+        BolsaHora bolsaHora = new BolsaHora();
+        bolsaHora.setUsuario(miusuario);
+        bolsaHora.setProyecto(nuevoProyecto);
+        bolsaHora.setHorasTotales(proyecto.getHorasAsignadas());
+        bolsaHora.setHorasUsadas(0);
+        bolsaHora.setHorasRestantes(proyecto.getHorasAsignadas());
+        bolsaHorasRepository.save(bolsaHora);
+
+
+        //envio de mensaje de creacion , debe ser el mismo email del cliente
         String subject = "Creacion de un nuevo proyecto";
         String body = "Hola " + cliente.getNombre() + ",\n\n" +
                 "Te informamos la creacion de un nuevo proyecto:\n" +
-                "Nombre de proyecto: " + proyecto.getNombre() + "\n" +
-                "descripcion: " + proyecto.getDescripcion() + "\n\n" +
+                "Nombre de proyecto: " + proyecto.getProyecto().getNombre() + "\n" +
+                "descripcion: " + proyecto.getProyecto().getDescripcion() + "\n\n" +
                 "Si tienes alguna pregunta o problema, no dudes en contactarnos.\n\n" +
                 "Saludos,\n" +
                 "El equipo de soporte";
 
         enviarCorreoBienvenida(cliente,subject,body);
-        registrarEstado(proyecto, estadoProyecto, "Creacion del proyecto",1);
+        registrarEstado(proyecto.getProyecto(), estadoProyecto, "Creacion del proyecto",1);
         return nuevoProyecto;
     }
 
@@ -79,10 +102,6 @@ public class ProyectoService {
 
 
 
-
-    //al asignarlo se debe definir el programador asignado
-    // un programador puede tener varios proyectos y los proyectos pueden tener varios progrmadors
-        //se debe crear una tabla de proyectos asignados
 
 
     public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {

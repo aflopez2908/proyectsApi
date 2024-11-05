@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.controller;
 import java.util.List;
 
+import gestorfreelance.gestorfreelancev5.DTO.ProyectoDTO;
 import gestorfreelance.gestorfreelancev5.exception.ProyectoNoEncontradoException;
 import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
 import gestorfreelance.gestorfreelancev5.model.EstadoProyecto;
@@ -43,7 +44,7 @@ public class ProyectoController {
     
 
     @PostMapping
-    public ResponseEntity<?> crearProyecto(@RequestBody Proyecto proyecto) {
+    public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyecto) {
         try {
             Proyecto nuevoProyecto = proyectoService.crearProyecto(proyecto);
             return new ResponseEntity<>(nuevoProyecto, HttpStatus.CREATED);
