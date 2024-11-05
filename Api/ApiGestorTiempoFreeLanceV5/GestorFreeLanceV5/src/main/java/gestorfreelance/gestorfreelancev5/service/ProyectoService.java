@@ -130,26 +130,5 @@ public class ProyectoService {
     }
 
 
-    public ProyectoEstadisticas obtenerEstadisticas() {
-        long totalProyectos = proyectoRepository.count();
-        long proyectosActivos = proyectoRepository.countByEstado(1L); // Ajusta según tus estados
-        long proyectosFinalizados = proyectoRepository.countByEstado(2L);
-
-        List<Proyecto> proyectos = proyectoRepository.findAll();
-        double duracionPromedio = proyectos.isEmpty() ? 0 :
-                proyectos.stream()
-                        .mapToDouble(proyecto -> calcularDuracion(proyecto))
-                        .average()
-                        .orElse(0);
-
-        return new ProyectoEstadisticas(totalProyectos, proyectosActivos, proyectosFinalizados, duracionPromedio);
-    }
-
-    private double calcularDuracion(Proyecto proyecto) {
-        // Lógica para calcular la duración de un proyecto (por ejemplo, entre fecha de inicio y fecha de fin)
-        return 0; // Implementar según tu lógica de duración
-    }
-
-
 }
 

@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 public class Direccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "direccion_id")
     private Integer direccionId;
     
     @Column(length = 255)

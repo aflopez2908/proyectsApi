@@ -1,18 +1,12 @@
 package gestorfreelance.gestorfreelancev5.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 @Data
@@ -24,6 +18,7 @@ import java.time.LocalDateTime;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Integer usuarioId;
     
     @Column(nullable = false, length = 100)
@@ -35,9 +30,14 @@ public class Usuario {
     @Column(nullable = false, length = 255)
     private String contraseña;
 
-    @ManyToOne
+/*    @ManyToOne
     @JoinColumn(name = "rol_id")
-    private Rol rol;
+    private Rol rol;*/
+
+  //  @ManyToMany(fetch = FetchType.EAGER, targetEntity = Rol.class, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "UserRol", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "rol_id"))
+    private Set<Rol> rol;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

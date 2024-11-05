@@ -20,8 +20,6 @@ public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
 
     long count(); // Total de proyectos
 
-    long countByEstado(Long estado); // Contar proyectos por estado
-    List<Proyecto> findAll(); // Obtener todos los proyectos
 
 
 }

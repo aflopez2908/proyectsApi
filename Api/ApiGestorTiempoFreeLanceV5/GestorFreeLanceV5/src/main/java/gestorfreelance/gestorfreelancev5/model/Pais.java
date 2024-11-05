@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class Pais {
  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "pais_id")
     private Integer paisId;
     
     @Column(nullable = false, length = 100)

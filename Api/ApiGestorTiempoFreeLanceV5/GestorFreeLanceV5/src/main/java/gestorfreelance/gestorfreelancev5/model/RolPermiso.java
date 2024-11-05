@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="Rol_Permiso")
+@Table(name="Rol_Permiso ")
 public class RolPermiso {
     @EmbeddedId
     private RolPermisoId id;

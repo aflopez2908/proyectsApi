@@ -13,7 +13,7 @@ public interface ProyectoEstadoRepository extends JpaRepository<ProyectoEstado,L
     @Query("SELECT p FROM ProyectoEstado p WHERE p.proyectoEstadoId = :proyectoId")
     ProyectoEstado findByProyectoId(@Param("proyectoId") Long proyectoId);
 
-    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM ProyectoEstado p WHERE p.proyecto.proyectoId = :proyectoId AND p.estado.estadoId = 2")
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM ProyectoEstado p WHERE p.proyecto.proyectoId = :proyectoId AND p.estado.estadoId = 4")
     boolean existsByProyectoIdAndProyectoEstadoIdEqualsTwo(@Param("proyectoId") Long proyectoId);
 
 
