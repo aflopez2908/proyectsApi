@@ -23,7 +23,7 @@ public class UsuarioService {
     }
 
     public Usuario guardarUsuario(Usuario usuario) {
-        if (usuariosRepository.findByEmailAndRol(usuario.getEmail(), usuario.getRol()) != null) {
+       /* if (usuariosRepository.findByEmailAndRol(usuario.getEmail(), usuario.getRol()) != null) {
             throw new IllegalArgumentException("El email ya está registrado para este rol.");
         }
 
@@ -33,7 +33,7 @@ public class UsuarioService {
 
         if (usuario.getContraseña() == null || usuario.getContraseña().isEmpty()) {
             throw new IllegalArgumentException("La contraseña es obligatoria.");
-        }
+        }*/
 
 /*        String rolNombre = usuario.getRol().getNombre();
         if ("COORDINADOR".equals(rolNombre)) {
@@ -45,7 +45,7 @@ public class UsuarioService {
     }
 
     public Usuario crearUsuario(Usuario usuario, Rol rol) {
-        usuario.setRol(rol);
+        //usuario.setRol(rol);
         return guardarUsuario(usuario);
     }
 
@@ -64,11 +64,5 @@ public class UsuarioService {
     public List<Usuario> buscarPorNombre(String nombre) {
         return usuariosRepository.findByNombreContaining(nombre);
     }
-
-
-
-
-
-
 
 }
