@@ -65,11 +65,6 @@ public class UsuarioController {
                             .orElseThrow(() -> new RuntimeException("Error: Rol no encontrado")))
                     .collect(Collectors.toSet());
 
-/*            Set<Rol>    rol = createUserDTO.getRol().stream()
-                    .map(role -> Rol.builder()
-                            .nombre(ERol.valueOf(role)).
-                            build()).collect(Collectors.toSet());*/
-
             Usuario usuario = Usuario.builder()
                     .nombre(createUserDTO.getNombre())
                     .contraseña(passwordEncoder.encode(createUserDTO.getContraseña()))
@@ -130,23 +125,4 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al buscar el usuario por email: " + e.getMessage());
         }
     }
-
-/*    @GetMapping("/buscar/rol")
-    public ResponseEntity<?> buscarPorRol(@RequestParam Integer rolId) {
-        try {
-            Rol rol = rolService.obtenerPorId(rolId);
-            if (rol == null) {
-                return ResponseEntity.badRequest().body("Error: No se encontró el rol con ID: " + rolId);
-            }
-
-            List<Usuario> usuarios = usuarioService.buscarPorRol(rol);
-            if (usuarios.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: No se encontraron usuarios para el rol con ID: " + rolId);
-            }
-            return ResponseEntity.ok(usuarios);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al buscar usuarios por rol: " + e.getMessage());
-        }
-    }*/
-
 }

@@ -20,16 +20,6 @@ public class GestorFreeLanceV5Application {
 	public static void main(String[] args) {
 		SpringApplication.run(GestorFreeLanceV5Application.class, args);
 
-
-
-/*		Usuario usuario = Usuario.builder()
-				.email("santiago@mail.com")
-				.nombre("santiago")
-				.contraseña(passwordEncoder.encode("1234"))
-				.roles(Set.of(Rol.builder()
-						.nombre(ERol.valueOf(ERol.ADMIN.name()))
-						.build()))
-				.build();*/
 	}
 
 }

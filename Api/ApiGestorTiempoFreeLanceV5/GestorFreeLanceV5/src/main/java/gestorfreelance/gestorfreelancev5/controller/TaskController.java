@@ -44,24 +44,5 @@ public class TaskController {
     }
 }
 
-/*    public Tarea createTarea(@RequestBody Tarea tarea)
-    {
-        System.out.println("Task controller:" + tarea.toString());
-        try {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Tarea creada exitosamente");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-        return tareasService.createTarea(tarea);
-    }*/
-
-/*    @PutMapping("/{id}")
-    public Tarea updateTarea(@PathVariable Integer id, @RequestBody Tarea tarea) {
-        return tareasService.updateTarea(id, tarea);
-    }*/
 
