@@ -1,18 +1,24 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
-import gestorfreelance.gestorfreelancev5.model.Rol;
-import gestorfreelance.gestorfreelancev5.model.Usuario;
+import gestorfreelance.gestorfreelancev5.DTO.CreateUserDTO;
+import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.service.RolService;
 import gestorfreelance.gestorfreelancev5.service.UsuarioService;
+import jakarta.validation.Valid;
 import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -23,13 +29,43 @@ public class UsuarioController {
 
     @Autowired
     private RolService rolService;
+    private PasswordEncoder passwordEncoder;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createUser")
-    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario) {
-        System.out.println(usuario);
-        usuarioService.crearUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al crear el usuario: ");
+    public ResponseEntity<?> createUser(@RequestBody Usuario usuario) {
+        try {
+            Usuario user = usuarioService.createUsuario(usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Usuario creado exitosamente");
+            response.put("UserId", user.getUsuarioId().toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createUser2(@Valid @RequestBody CreateUserDTO createUserDTO) {
+        try {
+            Set<Rol> rol = createUserDTO.getRol().stream()
+                    .map(role -> Rol.builder().nombre(ERol.valueOf(role)).build()).collect(Collectors.toSet());
+
+            Usuario usuario = Usuario.builder().nombre(createUserDTO.getNombre()).contraseña(passwordEncoder.encode(createUserDTO.getContraseña()))
+                    .email(createUserDTO.getEmail()).rol(rol).build();
+
+            usuarioService.saveUsuario(usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Usuario creado exitosamente");
+            response.put("UserId", usuario.getUsuarioId().toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping
@@ -53,6 +89,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el usuario con ID: " + id + ". Detalles: " + e.getMessage());
         }
     }
+
     @GetMapping("/buscar/nombre")
     public ResponseEntity<List<Usuario>> buscarPorNombre(@RequestParam String nombre) {
         List<Usuario> usuarios = usuarioService.buscarPorNombre(nombre);

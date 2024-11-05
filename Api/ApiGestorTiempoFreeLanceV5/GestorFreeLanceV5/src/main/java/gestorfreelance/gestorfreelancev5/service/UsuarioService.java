@@ -1,10 +1,12 @@
 package gestorfreelance.gestorfreelancev5.service;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import gestorfreelance.gestorfreelancev5.model.Rol;
 import gestorfreelance.gestorfreelancev5.model.Usuario;
 import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -14,6 +16,17 @@ public class UsuarioService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
+    public Usuario createUsuario(Usuario usuario) {
+        usuario.setFechaCreacion(LocalDateTime.now());
+        String Password = usuario.getContraseña();
+        usuario.setContraseña(new BCryptPasswordEncoder().encode(Password ));
+        return usuariosRepository.save(usuario);
+    }
+    public Usuario saveUsuario(Usuario usuario) {
+        return usuariosRepository.save(usuario);
+    }
+
+
     public List<Usuario> getAllUsuarios() {
         return usuariosRepository.findAll();
     }
@@ -22,31 +35,6 @@ public class UsuarioService {
         return usuariosRepository.findById(id).orElse(null);
     }
 
-    public Usuario guardarUsuario(Usuario usuario) {
-       /* if (usuariosRepository.findByEmailAndRol(usuario.getEmail(), usuario.getRol()) != null) {
-            throw new IllegalArgumentException("El email ya está registrado para este rol.");
-        }
-
-        if (usuario.getNombre() == null || usuario.getNombre().isEmpty()) {
-            throw new IllegalArgumentException("El nombre es obligatorio.");
-        }
-
-        if (usuario.getContraseña() == null || usuario.getContraseña().isEmpty()) {
-            throw new IllegalArgumentException("La contraseña es obligatoria.");
-        }*/
-
-/*        String rolNombre = usuario.getRol().getNombre();
-        if ("COORDINADOR".equals(rolNombre)) {
-        } else if ("DESARROLLADOR".equals(rolNombre)) {
-        } else if ("CLIENTE".equals(rolNombre)) {
-        }*/
-
-        return usuariosRepository.save(usuario);
-    }
-
-    public Usuario crearUsuario(Usuario usuario) {
-        return usuariosRepository.save(usuario);
-    }
 
     public void eliminarUsuario(Integer id) {
         usuariosRepository.deleteById(id);
