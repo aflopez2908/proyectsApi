@@ -1,5 +1,8 @@
 package gestorfreelance.gestorfreelancev5.security;
 
+import gestorfreelance.gestorfreelancev5.security.JwtAuthenticationFilter;
+import gestorfreelance.gestorfreelancev5.security.JwtAuthorizationFilter;
+import gestorfreelance.gestorfreelancev5.security.JwtUtils;
 import gestorfreelance.gestorfreelancev5.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +23,35 @@ public class SecurityConfig {
 
     @Autowired
     JwtUtils jwtUtils;
+
     @Autowired
     UserDetailsServiceImpl userDetailsService;
+
     @Autowired
     JwtAuthorizationFilter authorizationFilter;
 
     @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
+        return httpSecurity
+                .csrf(config -> config.disable())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/createUser","/obtenercitas/{id}").permitAll();
+                    auth.anyRequest().authenticated();
+                })
+                .sessionManagement(session -> {
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                })
+                .addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
+    }
+
+    /*    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager(http, passwordEncoder()));
@@ -39,7 +65,7 @@ public class SecurityConfig {
                 .addFilter(jwtAuthenticationFilter)
                 .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-    }
+    }*/
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
