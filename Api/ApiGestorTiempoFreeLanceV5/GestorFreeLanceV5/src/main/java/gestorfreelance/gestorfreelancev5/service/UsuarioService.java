@@ -93,7 +93,7 @@ public class UsuarioService {
             throw new RoleIdMismatchException("Rol_ID o Rol incorrecto. Verifique e intente nuevamente.");
         } else if (rol.getRolId() == 2 && !"Desarrollador".equalsIgnoreCase(rol.getNombre())) {
             throw new RoleIdMismatchException("Rol_ID o Rol incorrecto. Verifique e intente nuevamente.");
-        } else if (rol.getRolId() == 3 && !"Cliente".equalsIgnoreCase(rol.getNombre())) {
+        } else if (rol.getRolId() == 3 && ! "Cliente".equalsIgnoreCase(rol.getNombre())) {
             throw new RoleIdMismatchException("Rol_ID o Rol incorrecto. Verifique e intente nuevamente.");
         } else if (rol.getRolId() < 1 || rol.getRolId() > 3) {
             throw new InvalidRoleException("El ID de rol es inválido. Debe ser 1 (Administrador), 2 (Desarrollador) o 3 (Cliente).");
