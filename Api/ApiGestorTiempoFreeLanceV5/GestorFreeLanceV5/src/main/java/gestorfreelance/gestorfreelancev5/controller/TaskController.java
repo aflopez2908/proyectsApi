@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
 import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
+import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,16 @@ public class TaskController {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping
+    public ResponseEntity<List<Tarea>> getAllTask() {
+        try {
+            List<Tarea> tarea = tareasService.getAllTareas();
+            return new ResponseEntity<>(tarea, HttpStatus.OK);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
 }
