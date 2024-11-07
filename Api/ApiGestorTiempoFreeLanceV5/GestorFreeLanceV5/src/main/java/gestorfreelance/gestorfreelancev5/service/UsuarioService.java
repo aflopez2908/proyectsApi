@@ -7,6 +7,7 @@ import gestorfreelance.gestorfreelancev5.model.Rol;
 import gestorfreelance.gestorfreelancev5.model.Usuario;
 import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class UsuarioService {
         usuario.setContraseña(new BCryptPasswordEncoder().encode(Password ));
         return usuariosRepository.save(usuario);
     }
+
+
+
     public Usuario saveUsuario(Usuario usuario) {
         return usuariosRepository.save(usuario);
     }
@@ -52,5 +56,8 @@ public class UsuarioService {
     public List<Usuario> buscarPorNombre(String nombre) {
         return usuariosRepository.findByNombreContaining(nombre);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateUser(){}
 
 }
