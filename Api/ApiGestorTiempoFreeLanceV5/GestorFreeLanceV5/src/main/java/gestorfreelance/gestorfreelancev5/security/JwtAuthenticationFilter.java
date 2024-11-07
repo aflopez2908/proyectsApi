@@ -47,6 +47,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw new RuntimeException(e);
         }
         System.out.println(nombre +" " + contraseña);
+        System.out.println("Se valida aqui si esta bloqueado ");
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(nombre, contraseña);
 
