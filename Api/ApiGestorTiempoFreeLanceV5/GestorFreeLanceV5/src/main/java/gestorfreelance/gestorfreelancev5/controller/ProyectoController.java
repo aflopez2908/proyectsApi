@@ -10,6 +10,7 @@ import gestorfreelance.gestorfreelancev5.service.ProyectoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,8 +42,8 @@ public class ProyectoController {
 
 
     //get las tareas que pertenecen al proyecto id
-    
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyecto) {
         try {
@@ -87,6 +88,7 @@ public class ProyectoController {
     }
 
     //actualizacion de la tabla de estados
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/estado/{id}")
     public ResponseEntity<?> cambioEstado(@PathVariable int id, @RequestBody int estado) {
         try {

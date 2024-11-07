@@ -40,14 +40,11 @@ public class ProyectoService {
         return proyectoRepository.findAll();
     }
 
-
     public Proyecto obtenerProyectoPorId(Long proyecto_id) {
         return proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
     }
 
-
-    @PreAuthorize("hasRole('ADMIN')")
 
     public Proyecto crearProyecto(ProyectoDTO proyecto) {
         Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getProyecto().getNombre());
@@ -100,10 +97,6 @@ public class ProyectoService {
 
     }
 
-
-
-
-
     public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
         Proyecto proyecto = proyectoRepository.findById(proyecto_id).orElseThrow();
         Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
@@ -128,6 +121,8 @@ public class ProyectoService {
         proyectoRepository.delete(proyecto);
     }
 
+
+
     private void registrarEstado(Proyecto proyecto, EstadoProyecto estado, String comentario, int vigencia) {
         ProyectoEstado proyectoEstado = new ProyectoEstado();
         proyectoEstado.setProyecto(proyecto);
@@ -137,7 +132,6 @@ public class ProyectoService {
         proyectoEstado.setVigencia(vigencia);
         proyectoEstadoRepository.save(proyectoEstado);
     }
-
 
     private void enviarCorreoBienvenida(Cliente cliente, String subject, String body) throws CorreoUsuarioNoDisponibleException {
         String to = cliente.getEmail();
