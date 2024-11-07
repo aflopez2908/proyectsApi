@@ -39,7 +39,12 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/createUser", "/api/v1/user", "/api/v1/task", "/api/v1/user/createUser","/login","/swagger-ui/**").permitAll();
+                //    auth.requestMatchers("/createUser", "/api/v1/user", "/api/v1/task", "/api/v1/user/createUser","/login").permitAll();
+                    auth.requestMatchers("/createUser"
+                            ,"/login"
+                            ,"/v3/api-docs/**"
+                            ,"/swagger-ui/**"
+                            ,"/swagger-ui/index.html").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
