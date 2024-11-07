@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
 import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
+import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,11 @@ public class TaskController {
     @Autowired
     private TaskService tareasService;
 
-    @GetMapping
+/*    @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Tarea> getAllTareas() {
         return tareasService.getAllTareas();
-    }
+    }*/
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createTarea(@RequestBody Tarea tarea) {
@@ -40,6 +41,17 @@ public class TaskController {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<List<Tarea>> getAllTask() {
+        try {
+            List<Tarea> tarea = tareasService.getAllTareas();
+            return new ResponseEntity<>(tarea, HttpStatus.OK);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
 }
