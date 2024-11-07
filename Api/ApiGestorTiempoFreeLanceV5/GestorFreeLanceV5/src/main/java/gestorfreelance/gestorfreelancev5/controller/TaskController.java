@@ -21,11 +21,11 @@ public class TaskController {
     @Autowired
     private TaskService tareasService;
 
-    @GetMapping
+/*    @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<Tarea> getAllTareas() {
         return tareasService.getAllTareas();
-    }
+    }*/
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createTarea(@RequestBody Tarea tarea) {
@@ -44,6 +44,7 @@ public class TaskController {
         }
     }
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<Tarea>> getAllTask() {
         try {
             List<Tarea> tarea = tareasService.getAllTareas();
