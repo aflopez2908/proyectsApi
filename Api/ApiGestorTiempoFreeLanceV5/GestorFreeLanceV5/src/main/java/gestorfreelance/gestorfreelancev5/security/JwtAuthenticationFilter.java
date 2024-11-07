@@ -1,15 +1,19 @@
 package gestorfreelance.gestorfreelancev5.security;
 
+import gestorfreelance.gestorfreelancev5.exception.UsuarioBloqueadoException;
 import gestorfreelance.gestorfreelancev5.model.Usuario;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gestorfreelance.gestorfreelancev5.service.IntentoLoginService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -27,6 +31,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public JwtAuthenticationFilter(JwtUtils jwtUtils){
         this.jwtUtils = jwtUtils;
     }
+    @Autowired
+    private IntentoLoginService intentoLoginService;
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
@@ -48,6 +54,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
         System.out.println(nombre +" " + contraseña);
         System.out.println("Se valida aqui si esta bloqueado ");
+        //Inicio modificacion
+        intentoLoginService.registrarIntento(usuario);
+        boolean bloqueado = intentoLoginService.isUsuarioBloqueado(usuario);
+        if (bloqueado) {
+            throw new UsuarioBloqueadoException("Usuario bloqueado por múltiples intentos fallidos");
+        }
+        //Fin modificacion
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(nombre, contraseña);
 
