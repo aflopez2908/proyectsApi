@@ -20,6 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
+    private IntentoLoginService intentoLoginService;
+
     @Override
     public UserDetails loadUserByUsername(String nombre) throws UsernameNotFoundException {
 
@@ -30,6 +32,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getNombre().name())))
                 .collect(Collectors.toSet());
+
+        System.out.println("User details: " + user);
+        //Inicio modificacion
+       /* Usuario usercheck = usuariosRepository.findByNombreAndContraseña(user.getNombre(), user.getContraseña());
+        System.out.println("Usuario R: " + usercheck);
+        if (usercheck == null)
+        {  System.out.println("Login Fallido");
+            intentoLoginService.registrarIntento(user);}*/
+        //Fin Modificacion
         return new User(user.getNombre(),
                 user.getContraseña(),
                 true,

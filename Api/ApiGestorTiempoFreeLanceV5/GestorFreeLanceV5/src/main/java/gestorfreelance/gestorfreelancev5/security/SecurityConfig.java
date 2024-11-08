@@ -1,8 +1,10 @@
 package gestorfreelance.gestorfreelancev5.security;
 
+import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
 import gestorfreelance.gestorfreelancev5.security.JwtAuthenticationFilter;
 import gestorfreelance.gestorfreelancev5.security.JwtAuthorizationFilter;
 import gestorfreelance.gestorfreelancev5.security.JwtUtils;
+import gestorfreelance.gestorfreelancev5.service.IntentoLoginService;
 import gestorfreelance.gestorfreelancev5.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +28,11 @@ public class SecurityConfig {
     JwtUtils jwtUtils;
 
     @Autowired
+    IntentoLoginService intentoLoginService;
+    @Autowired
+    UsuariosRepository usuariosRepository;
+
+    @Autowired
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
@@ -33,7 +40,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils,intentoLoginService,usuariosRepository);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
         return httpSecurity
