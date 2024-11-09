@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtUtils = jwtUtils;
         this.intentoLoginService = intentoLoginService;
         this.usuariosRepository = usuariosRepository;
-
     }
 
     @Override
