@@ -20,6 +20,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
+    private IntentoLoginService intentoLoginService;
+
     @Override
     public UserDetails loadUserByUsername(String nombre) throws UsernameNotFoundException {
 
@@ -30,6 +32,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getNombre().name())))
                 .collect(Collectors.toSet());
+        
         return new User(user.getNombre(),
                 user.getContraseña(),
                 true,

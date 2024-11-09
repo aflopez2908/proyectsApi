@@ -6,7 +6,6 @@ import gestorfreelance.gestorfreelancev5.repository.RolesRepository;
 import gestorfreelance.gestorfreelancev5.service.RolService;
 import gestorfreelance.gestorfreelancev5.service.UsuarioService;
 import jakarta.validation.Valid;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +37,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+/*    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createUser")
     public ResponseEntity<?> createUser(@RequestBody Usuario usuario) {
         try {
@@ -52,8 +51,9 @@ public class UsuarioController {
             errorResponse.put("message", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createUser2(@Valid @RequestBody CreateUserDTO createUserDTO) {
         try {
@@ -120,6 +120,21 @@ public class UsuarioController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al buscar el usuario por email: " + e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/unlock")
+    public ResponseEntity<?> unlockUsuario(@RequestBody Usuario usuario) {
+        try {
+            String resultado = usuarioService.unlockrUsuario(usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", resultado);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Error al desbloquear el usuario: " + e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
