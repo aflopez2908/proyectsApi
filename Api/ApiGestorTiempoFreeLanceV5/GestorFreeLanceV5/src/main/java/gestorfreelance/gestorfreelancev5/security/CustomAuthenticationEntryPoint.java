@@ -16,7 +16,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         // Verificar si la causa es UsuarioBloqueadoException
         Throwable cause = authException.getCause();
         if (cause instanceof UsuarioBloqueadoException) {
-            response.sendError(423, "Usuario bloqueado por múltiples intentos fallidos");
+            response.sendError(423, "Usuario bloqueado por multiples intentos fallidos");
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
         }

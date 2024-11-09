@@ -25,7 +25,7 @@ public class IntentoLoginService {
             // Verificar si el contador excede el límite permitido
             if (intento.getContador() >= 3) {
                 intento.setBloqueado(true);
-                intento.setVigente(false); // Marcar como no vigente una vez bloqueado
+               // intento.setVigente(false); // Marcar como no vigente una vez bloqueado
             }
 
         } else {

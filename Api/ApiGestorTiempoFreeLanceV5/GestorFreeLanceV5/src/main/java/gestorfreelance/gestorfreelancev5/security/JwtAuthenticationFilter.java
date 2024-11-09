@@ -50,7 +50,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             nombre = usuario.getNombre();
             contraseña = usuario.getContraseña();
 
-/*            Usuario usertest = usuariosRepository.findByNombre(nombre);*/
 
             Usuario usertest = usuariosRepository.findByNombre(nombre)
                     .orElseThrow(() -> new UsernameNotFoundException("El usuario no existe."));
@@ -62,8 +61,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             System.out.println("El usuario que se lee es:" + usuario);
             if (intentoLoginService.isUsuarioBloqueado(usuario)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Usuario bloqueado por múltiples intentos fallidos");
+                response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                response.getWriter().write("Usuario bloqueado por multiples intentos fallidos");
                 response.getWriter().flush();
                 throw new RuntimeException("Usuario bloqueado");
             }
@@ -75,22 +74,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-/*        System.out.println(nombre +" " + contraseña);
-        String CheckPw = new BCryptPasswordEncoder().encode(contraseña);
-        System.out.println("PW: " + CheckPw);
-        Usuario usercheck = usuariosRepository.findByNombreAndContraseña(nombre, CheckPw);
-        System.out.println("Usuario filter: " + usercheck);
-        if (usercheck == null)
-        {  System.out.println("Login Fallido");
-            //intentoLoginService.registrarIntento(usuario);
-        }*/
-
-
-/*        intentoLoginService.registrarIntento(usuario);
-        boolean bloqueado = intentoLoginService.isUsuarioBloqueado(usuario);
-        if (bloqueado) {
-            throw new UsuarioBloqueadoException("Usuario bloqueado por múltiples intentos fallidos");
-        }*/
 
 /*        UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(nombre, contraseña);
@@ -102,13 +85,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(nombre, contraseña);
             return getAuthenticationManager().authenticate(authenticationToken);
-
         } catch (AuthenticationException ex) {
-            // Registrar intento fallido si la autenticación falla
             intentoLoginService.registrarIntento(usuario);
-            throw ex; // Re-lanzar la excepción para manejarla adecuadamente en el flujo de Spring Security
+            throw ex;
         }
-
     }
 
     @Override

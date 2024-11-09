@@ -17,17 +17,7 @@ public class ClienteService {
     @Autowired
     private ClientesRepository clienteRepository;
 
-    @Autowired
-    private DireccionesRepository DireccionesRepository2;
-
-
     public Cliente createCliente(Cliente cliente) {
-/*        Optional<Direccion> direccionExistente = DireccionesRepository2.findByCalleAndCiudad_CiudadId(cliente.getDireccion().getCalle(), cliente.getDireccion().getCiudad().getCiudadId());
-        if (direccionExistente.isPresent()) {
-            cliente.setDireccion(direccionExistente.get());
-        } else {
-            DireccionesRepository2.save(cliente.getDireccion());
-        }*/
         return clienteRepository.save(cliente);
     }
 
