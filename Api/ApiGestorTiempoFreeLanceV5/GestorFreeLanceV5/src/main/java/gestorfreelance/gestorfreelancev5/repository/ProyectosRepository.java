@@ -1,4 +1,5 @@
 package gestorfreelance.gestorfreelancev5.repository;
+import gestorfreelance.gestorfreelancev5.model.BolsaHora;
 import gestorfreelance.gestorfreelancev5.model.Cliente;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
@@ -20,6 +22,8 @@ public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
 
     long count(); // Total de proyectos
 
+
+  //  Optional<Proyecto> findByProyectoId(Integer proyectoId);
 
 
 }

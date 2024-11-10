@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class BolsaHora {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bolsa_id")
     private Integer bolsaId;
 
 /*    @ManyToOne
@@ -32,12 +33,12 @@ public class BolsaHora {
     @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
 
-    @Column(nullable = false)
+    @Column(name = "horas_totales")
     private Integer horasTotales;
 
-    @Column(nullable = false)
+    @Column(name = "horas_usadas")
     private Integer horasUsadas;
 
-    @Column(nullable = false)
+    @Column(name = "horas_restantes")
     private Integer horasRestantes;   
 }

@@ -12,5 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface BolsaHorasRepository  extends JpaRepository<BolsaHora, Integer>{
     List<BolsaHora> findByProyecto(Proyecto proyecto);
     List<BolsaHora> findByHorasRestantesGreaterThan(Integer horas);
-    Optional<BolsaHora> findByProyectoId(Long proyectoId);
+    Optional<BolsaHora> findByProyecto_ProyectoId(Integer proyectoId);
+
+
+
 }
