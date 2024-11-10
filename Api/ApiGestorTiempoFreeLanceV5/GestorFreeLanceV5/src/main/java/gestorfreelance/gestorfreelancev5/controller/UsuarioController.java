@@ -93,6 +93,7 @@ public class UsuarioController {
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
         try {

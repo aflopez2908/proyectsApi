@@ -23,6 +23,9 @@ public class UsuarioService {
     @Autowired
     private IntentoLoginRepository intentoLoginRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public Usuario createUsuario(Usuario usuario) {
         usuario.setFechaCreacion(LocalDateTime.now());
         String Password = usuario.getContraseña();
@@ -30,8 +33,10 @@ public class UsuarioService {
         return usuariosRepository.save(usuario);
     }
 
+
     public Usuario saveUsuario(Usuario usuario) {
-        return usuariosRepository.save(usuario);
+        Usuario nuevoUsuario = usuariosRepository.save(usuario);
+        return nuevoUsuario;
     }
 
 
@@ -45,7 +50,19 @@ public class UsuarioService {
 
 
     public void eliminarUsuario(Integer id) {
-        usuariosRepository.deleteById(id);
+        Optional<Usuario> usuarioOpt = usuariosRepository.findById(id);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            usuariosRepository.deleteById(id);
+
+            // Enviar correo de notificación
+            System.out.println("hola 1 ");
+            String emailBody = "Hola " + usuario.getNombre() + ", tu cuenta ha sido eliminada.";
+            emailService.sendEmailwithAttachment(usuario.getEmail(), "Cuenta eliminada", emailBody);
+            System.out.println("hola 2 ");
+        } else {
+            throw new IllegalArgumentException("Usuario no encontrado con ID: " + id);
+        }
     }
 
     public boolean existeUsuario(Integer id) {
