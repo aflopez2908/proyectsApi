@@ -36,6 +36,18 @@ public class UsuarioService {
 
     public Usuario saveUsuario(Usuario usuario) {
         Usuario nuevoUsuario = usuariosRepository.save(usuario);
+
+        // BIENVENIDA
+        String emailBody = "¡Bienvenido(a) a GPF!\n\n"
+                + "Hola, " + usuario.getNombre() + ":\n\n"
+                + "¡Bienvenido(a) a GPF! Estamos muy contentos de que te hayas unido a nosotros. "
+                + "Ahora que formas parte de nuestra comunidad, podrás disfrutar de todas las funcionalidades y recursos "
+                + "que hemos diseñado para ayudarte. ¡Nos alegra que estés con nosotros y esperamos que aproveches al máximo tu experiencia en nuestra plataforma!\n\n"
+                + "Saludos cordiales,\n\n"
+                + "El equipo de GPF";
+
+        emailService.sendEmailwithAttachment(usuario.getEmail(), "Cuenta creada"+ usuario.getNombre() + " BIENVENID@:\n\n" , emailBody);
+
         return nuevoUsuario;
     }
 
