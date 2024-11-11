@@ -58,7 +58,7 @@ class EmailServiceTest {
         // Simula una excepción MailException en el método 'send' en lugar de 'createMimeMessage'
         doThrow(new MailException("Failed to send MimeMessage") {}).when(javaMailSender).send(mimeMessage);
 
-        // 
+        //
         String result = emailService.sendEmailwithAttachment(to, subject, body);
 
         //respuesta

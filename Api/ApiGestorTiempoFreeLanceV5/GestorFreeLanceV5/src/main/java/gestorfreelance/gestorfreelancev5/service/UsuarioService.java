@@ -51,14 +51,45 @@ public class UsuarioService {
         return nuevoUsuario;
     }
 
+    public Usuario actualizarUsuario(Integer id, Usuario usuarioActualizado) {
+        try {
+            // Verificar si el usuario existe
+            Usuario usuarioExistente = usuariosRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-    public List<Usuario> getAllUsuarios() {
-        return usuariosRepository.findAll();
+            // Validar información necesaria
+            if (usuarioActualizado.getNombre() == null || usuarioActualizado.getNombre().isEmpty()) {
+                throw new IllegalArgumentException("El nombre es obligatorio.");
+            }
+            if (usuarioActualizado.getEmail() == null || usuarioActualizado.getEmail().isEmpty()) {
+                throw new IllegalArgumentException("El correo electrónico es obligatorio.");
+            }
+            if (usuarioActualizado.getContraseña() == null || usuarioActualizado.getContraseña().isEmpty()) {
+                throw new IllegalArgumentException("La contraseña es obligatoria.");
+            }
+
+            // Validar que el correo no esté duplicado
+            Optional<Usuario> usuarioConEmail = usuariosRepository.findByEmail(usuarioActualizado.getEmail());
+            if (usuarioConEmail.isPresent() && !usuarioConEmail.get().getUsuarioId().equals(id)) {
+                throw new IllegalArgumentException("El correo electrónico ya está registrado. Por favor, utilice otro.");
+            }
+
+            // Actualizar los datos del usuario
+            usuarioExistente.setNombre(usuarioActualizado.getNombre());
+            usuarioExistente.setEmail(usuarioActualizado.getEmail());
+            usuarioExistente.setContraseña(new BCryptPasswordEncoder().encode(usuarioActualizado.getContraseña()));
+            usuarioExistente.setRol(usuarioActualizado.getRol());
+
+            // Guardar cambios
+            return usuariosRepository.save(usuarioExistente);
+
+        } catch (Exception e) {
+            // Captura cualquier otro error y genera una excepción personalizada
+            throw new RuntimeException("Error al actualizar el usuario: " + e.getMessage(), e);
+        }
     }
 
-    public Usuario obtenerPorId(Integer id) {
-        return usuariosRepository.findById(id).orElse(null);
-    }
+
 
 
     public void eliminarUsuario(Integer id) {
@@ -72,10 +103,21 @@ public class UsuarioService {
             String emailBody = "Hola " + usuario.getNombre() + ", tu cuenta ha sido eliminada.";
             emailService.sendEmailwithAttachment(usuario.getEmail(), "Cuenta eliminada", emailBody);
             System.out.println("hola 2 ");
+
         } else {
             throw new IllegalArgumentException("Usuario no encontrado con ID: " + id);
         }
     }
+
+    public List<Usuario> getAllUsuarios() {
+        return usuariosRepository.findAll();
+    }
+
+    public Usuario obtenerPorId(Integer id) {
+        return usuariosRepository.findById(id).orElse(null);
+    }
+
+
 
     public boolean existeUsuario(Integer id) {
         return usuariosRepository.existsById(id);
@@ -103,11 +145,35 @@ public class UsuarioService {
             intento.setContador(0); // Reiniciar el contador de intentos*/
 
             intentoLoginRepository.save(intento);
+            // corre correo desbloqueado
             return "Usuario desbloqueado correctamente.";
         } else {
             return "No se encontraron intentos vigentes para el usuario.";
         }
     }
+
+
+
+    public void enviarCorreoAUsuarioEspecifico(Integer usuarioId, String asunto, String mensaje) {
+        // Buscar el usuario por su ID
+        Usuario usuario = usuariosRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + usuarioId));
+
+        // Verificar que el usuario tenga un email válido
+        if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
+            throw new IllegalStateException("El usuario con ID: " + usuarioId + " no tiene un correo electrónico válido.");
+        }
+
+        // Enviar el correo utilizando el servicio de correo electrónico
+        try {
+            emailService.sendEmailwithAttachment(usuario.getEmail(), asunto, mensaje);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al enviar el correo a " + usuario.getEmail() + ": " + e.getMessage());
+        }
+    }
+
+
+
 
 
 

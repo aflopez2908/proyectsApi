@@ -4,6 +4,7 @@ import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
 import gestorfreelance.gestorfreelancev5.security.JwtAuthenticationFilter;
 import gestorfreelance.gestorfreelancev5.security.JwtAuthorizationFilter;
 import gestorfreelance.gestorfreelancev5.security.JwtUtils;
+import gestorfreelance.gestorfreelancev5.service.EmailService;
 import gestorfreelance.gestorfreelancev5.service.IntentoLoginService;
 import gestorfreelance.gestorfreelancev5.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,15 @@ public class SecurityConfig {
     @Autowired
     JwtAuthorizationFilter authorizationFilter;
 
+    @Autowired
+    EmailService emailService;
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, AuthenticationManager authenticationManager) throws Exception {
         JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils,intentoLoginService,usuariosRepository);
         jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
         jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+        jwtAuthenticationFilter.setEmailService(emailService);
         return httpSecurity
                 .csrf(config -> config.disable())
                 .authorizeHttpRequests(auth -> {
