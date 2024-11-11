@@ -13,12 +13,14 @@ import org.springframework.stereotype.Repository;
 @Repository("UsuariosRepository")
 public interface UsuariosRepository extends JpaRepository<Usuario, Integer> {
     Optional<Usuario> findByNombre(String nombre);
+    //Usuario findByNombre(String nombre);
     List<Usuario> findByNombreContaining(String nombre);
     Optional<Usuario> findByEmail(String email);
     List<Usuario> findByRol(Rol rol);
     List<Usuario> findByNombreAndRol(String nombre, Rol rol);
     Usuario findByEmailAndRol(String email, Rol rol);
     Usuario findByUsuarioId(Integer usuarioId);
+    Usuario findByNombreAndContraseña(String nombre, String contrasena);
 
     @Query("SELECT u FROM Usuario u " +
             "INNER JOIN Cliente c ON u.nombre = c.nombre " +
