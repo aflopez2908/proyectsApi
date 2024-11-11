@@ -22,8 +22,4 @@ public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
 
     long count(); // Total de proyectos
 
-
-  //  Optional<Proyecto> findByProyectoId(Integer proyectoId);
-
-
 }

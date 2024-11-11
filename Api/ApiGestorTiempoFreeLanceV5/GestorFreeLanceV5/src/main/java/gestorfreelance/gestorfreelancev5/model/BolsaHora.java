@@ -25,10 +25,6 @@ public class BolsaHora {
     @Column(name = "bolsa_id")
     private Integer bolsaId;
 
-/*    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;*/
-
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
