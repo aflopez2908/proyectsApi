@@ -14,6 +14,10 @@ public class PaisService {
     private PaisRepository paisRepository;
 
     public Pais createPais(Pais pais) {
+        Optional<Pais> paisExistente = paisRepository.findByNombre(pais.getNombre());
+        if (paisExistente.isPresent()) {
+            throw new RuntimeException("El país ya existe.");
+        }
         return paisRepository.save(pais);
     }
 

@@ -23,7 +23,7 @@ public class Pais {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "pais_id")
     private Integer paisId;
-    
-    @Column(nullable = false, length = 100)
+
+   @Column(nullable = false, length = 100, unique = true)
     private String nombre;    
 }
