@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class PrioridadTarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prioridad_id")
     private Integer prioridadId;
     
     @Column(nullable = false, length = 50)

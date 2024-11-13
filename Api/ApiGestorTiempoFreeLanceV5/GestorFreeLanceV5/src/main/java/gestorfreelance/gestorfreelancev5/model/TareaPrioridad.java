@@ -1,11 +1,6 @@
 package gestorfreelance.gestorfreelancev5.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,16 +14,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="Tarea_Prioridad")
 public class TareaPrioridad {
-    @EmbeddedId
-    private TareaPrioridadId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
 
-    @ManyToOne
-    @MapsId("tareaId")
-    @JoinColumn(name = "tarea_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "tarea_id", nullable = false)
     private Tarea tarea;
 
-    @ManyToOne
-    @MapsId("prioridadId")
-    @JoinColumn(name = "prioridad_id")
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "prioridad_id", nullable = false)
     private PrioridadTarea prioridad;
 }

@@ -11,6 +11,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository("TareasPrioridadesRepository")
 public interface TareasPrioridadesRepository extends JpaRepository<TareaPrioridad, TareaPrioridadId> {
-    List<TareaPrioridad> findByTarea(Tarea tarea);
-    List<TareaPrioridad> findByPrioridad(PrioridadTarea prioridad);
+
 }

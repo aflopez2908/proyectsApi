@@ -5,8 +5,10 @@ import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.RolesRepository;
 import gestorfreelance.gestorfreelancev5.service.RolService;
 import gestorfreelance.gestorfreelancev5.service.UsuarioService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -81,6 +83,45 @@ public class UsuarioController {
         }
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario usuario) {
+        try {
+            Usuario usuarioActualizado = usuarioService.actualizarUsuario(id, usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Usuario actualizado exitosamente");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error de integridad de datos. Verifique que el correo electrónico o el rol no estén duplicados.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No se pudo completar la actualización. Por favor, inténtelo de nuevo más tarde.");
+        }
+    }
+
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
+        try {
+            usuarioService.eliminarUsuario(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el usuario con ID: " + id + ". Detalles: " + e.getMessage());
+        }
+    }
+
+
+
+
+
+
     @GetMapping
     public ResponseEntity<List<Usuario>> obtenerTodos() {
         List<Usuario> usuarios = usuarioService.getAllUsuarios();
@@ -93,16 +134,6 @@ public class UsuarioController {
         return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
-        try {
-            usuarioService.eliminarUsuario(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el usuario con ID: " + id + ". Detalles: " + e.getMessage());
-        }
-    }
 
     @GetMapping("/buscar/nombre")
     public ResponseEntity<List<Usuario>> buscarPorNombre(@RequestParam String nombre) {
@@ -124,6 +155,7 @@ public class UsuarioController {
         }
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/unlock")
     public ResponseEntity<?> unlockUsuario(@RequestBody Usuario usuario) {
@@ -138,4 +170,26 @@ public class UsuarioController {
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 public class HistorialTarea {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "historial_id")
     private UUID historialId;
 
     @ManyToOne
@@ -49,4 +50,7 @@ public class HistorialTarea {
     @JoinColumn(name = "estado_id")
     private EstadoTarea estadoTarea;
 
+    @ManyToOne
+    @JoinColumn(name = "prioridad_id")
+    private PrioridadTarea prioridadTarea;
 }

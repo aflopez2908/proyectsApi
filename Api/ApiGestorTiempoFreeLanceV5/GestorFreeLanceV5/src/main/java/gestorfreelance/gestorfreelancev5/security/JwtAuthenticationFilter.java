@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gestorfreelance.gestorfreelancev5.repository.UsuariosRepository;
+import gestorfreelance.gestorfreelancev5.service.EmailService;
 import gestorfreelance.gestorfreelancev5.service.IntentoLoginService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,12 +31,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private JwtUtils jwtUtils;
     private IntentoLoginService intentoLoginService;
     private UsuariosRepository usuariosRepository;
-
+    private EmailService emailService;
     public JwtAuthenticationFilter(JwtUtils jwtUtils, IntentoLoginService intentoLoginService, UsuariosRepository usuariosRepository){
         this.jwtUtils = jwtUtils;
         this.intentoLoginService = intentoLoginService;
         this.usuariosRepository = usuariosRepository;
     }
+
+    public void setEmailService(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
@@ -60,6 +66,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             System.out.println("El usuario que se lee es:" + usuario);
             if (intentoLoginService.isUsuarioBloqueado(usuario)) {
+                // correo de usuario bloqueado por itentos fallidos
+                String subject = "Notificación de bloqueo de cuenta";
+                String body = "Su cuenta ha sido bloqueada debido a múltiples intentos fallidos de inicio de sesión.  Comuniquese con un  Adminitrador para desbloquear su cuenta ";
+                emailService.sendEmailwithAttachment(usuario.getEmail(), subject, body);
+
                 response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
                 response.getWriter().write("Usuario bloqueado por multiples intentos fallidos");
                 response.getWriter().flush();

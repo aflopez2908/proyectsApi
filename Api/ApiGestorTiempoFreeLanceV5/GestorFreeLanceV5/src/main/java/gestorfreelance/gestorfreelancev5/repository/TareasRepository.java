@@ -19,4 +19,5 @@ public interface TareasRepository extends JpaRepository<Tarea, Integer> {
     @Transactional
     @Query("DELETE FROM Tarea b WHERE b.proyecto.proyectoId = :proyectoId")
     void deleteByProyectoId(@Param("proyectoId") Long proyectoId);
+
 }
