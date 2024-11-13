@@ -25,6 +25,9 @@ public interface PeticionEstadoRepository extends JpaRepository<PeticionEstado, 
     @Query("UPDATE PeticionEstado pe SET pe.vigencia = 0 WHERE pe.peticion.idPeticion = :id")
     void actualizarVigenciaPeticion(Long id);
 
+    @Query("SELECT p FROM PeticionEstado p WHERE p.vigencia = 1 AND p.peticion.idPeticion = :peticionId")
+    PeticionEstado findByPeticionId(@Param("peticionId") Long peticionId);
+
 
 
 }

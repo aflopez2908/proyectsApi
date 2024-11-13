@@ -64,6 +64,12 @@ public class PeticionService {
             throw new ProyectoTerminadoException("La peticion esta en  fue terminado y no puede cambiar de estado");
         }
 
+        PeticionEstado estadoActual = peticionEstadoRepository.findByPeticionId(peticion.getIdPeticion());
+        int idEstadoPetuicion = estadoActual.getPeticionEstadoId().intValue();
+        if ( idEstadoPetuicion != 1 && estado== 1) {
+            throw new RuntimeException("La peticion ya fue creada y no puede cambiar a un estado creado");
+        }
+
         EstadoPeticion estadoPeticion = estadoPeticionRepository.findById(Long.valueOf(estado))
                 .orElseThrow(() -> new ResourceNotFoundException("Estado no encontrado con el ID: " + estado));
 
@@ -171,7 +177,6 @@ public class PeticionService {
         peticionRepository.eliminarRelacionesPorPeticionId(peticion_id);
         peticionRepository.delete(peticion);
     }
-    //cancelar peticion
 
 
 }

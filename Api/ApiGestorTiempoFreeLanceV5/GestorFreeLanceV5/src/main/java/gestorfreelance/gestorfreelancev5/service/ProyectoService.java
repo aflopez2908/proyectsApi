@@ -152,7 +152,7 @@ public class ProyectoService {
     }
 
     @Transactional
-    public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
+    public Proyecto actualizarProyecto(Long proyecto_id, ProyectoDTO detallesProyecto) {
         // Verificar que el proyecto exista
         Proyecto proyectoExistente = proyectoRepository.findById(proyecto_id)
                 .orElseThrow(() -> new ProyectoNoEncontradoException("proyecto no encontrado con el id:"+proyecto_id));
@@ -177,10 +177,12 @@ public class ProyectoService {
             validarNombreUnico(detallesProyecto.getNombre());
         }
 
+        Cliente cliente= clientesRepository.findByClienteId(detallesProyecto.getClienteId());
+
         // Actualizar los detalles del proyecto
         proyectoExistente.setNombre(detallesProyecto.getNombre());
         proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
-        proyectoExistente.setCliente(detallesProyecto.getCliente());
+        proyectoExistente.setCliente(cliente);
         proyectoExistente.setFechaInicio(detallesProyecto.getFechaInicio());
         proyectoExistente.setFechaFin(detallesProyecto.getFechaFin());
 
@@ -188,7 +190,7 @@ public class ProyectoService {
         return proyectoRepository.save(proyectoExistente);
     }
 
-    private void validarProyecto(Proyecto proyecto) {
+    private void validarProyecto(ProyectoDTO proyecto) {
         if (proyecto.getNombre() == null || proyecto.getNombre().isEmpty()) {
             throw new IllegalArgumentException("El nombre del proyecto no puede ser nulo o vacío.");
         }
@@ -197,7 +199,7 @@ public class ProyectoService {
             throw new IllegalArgumentException("La descripción del proyecto no puede ser nula o vacía.");
         }
 
-        if (proyecto.getCliente() == null) {
+        if (proyecto.getClienteId() == null) {
             throw new IllegalArgumentException("El cliente del proyecto no puede ser nulo.");
         }
 

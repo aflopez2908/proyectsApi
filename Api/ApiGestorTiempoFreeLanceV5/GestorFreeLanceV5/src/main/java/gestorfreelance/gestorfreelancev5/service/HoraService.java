@@ -1,12 +1,11 @@
 package gestorfreelance.gestorfreelancev5.service;
 
+import gestorfreelance.gestorfreelancev5.exception.CorreoUsuarioNoDisponibleException;
 import gestorfreelance.gestorfreelancev5.model.BolsaHora;
+import gestorfreelance.gestorfreelancev5.model.Cliente;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.ProyectoEstado;
-import gestorfreelance.gestorfreelancev5.repository.BolsaHorasRepository;
-import gestorfreelance.gestorfreelancev5.repository.EstadosProyectoRepository;
-import gestorfreelance.gestorfreelancev5.repository.ProyectoEstadoRepository;
-import gestorfreelance.gestorfreelancev5.repository.ProyectosRepository;
+import gestorfreelance.gestorfreelancev5.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +24,14 @@ public class HoraService {
 
     @Autowired
     private BolsaHorasRepository bolsaHorasRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ClientesRepository clientesRepository;
+
+
 
     public String agregarHorasABolsa(int proyectoId, int horas) {
         Optional<ProyectoEstado> proyectoEstadoOpt = proyectoEstadoRepository
@@ -81,5 +88,63 @@ public class HoraService {
         bolsaHorasRepository.save(nuevaBolsa);
 
         return "Nueva bolsa de horas creada exitosamente.";
+    }
+
+
+    // Método para consumir horas
+    public String consumirHoras(int proyectoId, int horasConsumidas) {
+        Optional<BolsaHora> bolsaHoraOpt = bolsaHorasRepository.findByProyecto_ProyectoId(proyectoId);
+
+        if (bolsaHoraOpt.isEmpty()) {
+            return "Error: No se encontró una bolsa de horas asociada al proyecto.";
+        }
+
+        BolsaHora bolsaHora = bolsaHoraOpt.get();
+        int horasRestantes = bolsaHora.getHorasRestantes();
+
+        if (horasConsumidas > horasRestantes) {
+            return "Error: No hay suficientes horas en la bolsa.";
+        }
+
+        // Actualizar las horas restantes y las horas usadas
+        bolsaHora.setHorasRestantes(horasRestantes - horasConsumidas);
+        bolsaHora.setHorasUsadas(bolsaHora.getHorasUsadas() + horasConsumidas);
+        bolsaHorasRepository.save(bolsaHora);
+
+        // Verificar si se ha alcanzado el 80% de consumo de las horas
+        double porcentajeConsumido = (double) bolsaHora.getHorasUsadas() / bolsaHora.getHorasTotales() * 100;
+        if (porcentajeConsumido >= 80) {
+
+            Cliente cliente = clientesRepository.findClienteByProyectoId((long) proyectoId);
+            Proyecto proyecto = proyectoRepository.findByProyectoId(proyectoId);
+            if (proyecto == null) {
+                throw new RuntimeException("Error: El proyecto no existe.");
+            }
+
+
+            String subject = "Advertencia: El 80% de las horas han sido consumidas. Quedan solo " + bolsaHora.getHorasRestantes() + " horas.";
+            String body = "Hola " + cliente.getNombre() + ",\n\n" +
+                    "Te informamos que las horas del proyecto con la descripcion:\n" +
+                    "Nombre de proyecto: " + proyecto.getNombre() + "\n" +
+                    "descripcion: " + proyecto.getDescripcion() + "\n\n" +
+                    "horas restantes: " + horasRestantes + "\n\n" +
+                    "Si tienes alguna pregunta o problema, no dudes en contactarnos.\n\n" +
+                    "Saludos,\n" +
+                    "El equipo de soporte";
+            enviarCorreo(cliente, subject, body);
+            // Notificación cuando se alcanza el 80% de las horas consumidas
+            return "Advertencia: El 80% de las horas han sido consumidas. Quedan solo " + bolsaHora.getHorasRestantes() + " horas.";
+        }
+
+        return "Horas consumidas exitosamente. Quedan " + bolsaHora.getHorasRestantes() + " horas.";
+    }
+
+    private void enviarCorreo(Cliente cliente, String subject, String body) throws CorreoUsuarioNoDisponibleException {
+        String to = cliente.getEmail();
+        if (to == null || to.isEmpty()) {
+            throw new CorreoUsuarioNoDisponibleException("El correo de notificacion no esta disponible");
+        }
+
+        emailService.sendEmailwithAttachment(to, subject, body);
     }
 }
