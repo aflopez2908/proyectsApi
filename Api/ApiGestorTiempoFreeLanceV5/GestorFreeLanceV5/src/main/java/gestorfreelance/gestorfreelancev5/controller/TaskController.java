@@ -4,6 +4,8 @@ import gestorfreelance.gestorfreelancev5.DTO.UpdateTareaRequestDTO;
 import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.service.HoraService;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@Tag(name = "Task Management", description = "Operaciones relacionadas con la gestión de tareas")
 public class TaskController {
 
     @Autowired
@@ -25,6 +28,7 @@ public class TaskController {
     @Autowired
     private HoraService horaService;
 
+    @Operation(summary = "Create a new task", description = "Crea una nueva tarea en el sistema")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createTarea(@RequestBody Tarea tarea) {
@@ -42,7 +46,7 @@ public class TaskController {
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @Operation(summary = "Get all tasks", description = "Obtiene todas las tareas registradas en el sistema")
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<Tarea>> getAllTask() {
@@ -54,7 +58,7 @@ public class TaskController {
                     .body(null);
         }
     }
-
+    @Operation(summary = "Update a task", description = "Actualiza los detalles de una tarea")
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> updateTarea(@RequestBody UpdateTareaRequestDTO updateRequest) {
