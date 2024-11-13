@@ -3,14 +3,13 @@ package gestorfreelance.gestorfreelancev5.service;
 
 import gestorfreelance.gestorfreelancev5.DTO.PeticionDTO;
 import gestorfreelance.gestorfreelancev5.DTO.ProyectoDTO;
-import gestorfreelance.gestorfreelancev5.exception.InvalidDataException;
-import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
-import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
+import gestorfreelance.gestorfreelancev5.exception.*;
 import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -45,7 +44,7 @@ public class PeticionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Peticion no encontrada con id: " + peticion_id));
     }
 
-
+    //en prueba unitaria
     public List<PeticionEstado> cambioEstado(int id,int estado) {
         Peticion peticion= peticionRepository.findByIdPeticion((long) id);
         //falta poder registrar el estado terminado
@@ -132,6 +131,40 @@ public class PeticionService {
         peticionEstado.setVigencia(vigencia);
         peticionEstadoRepository.save(peticionEstado);
     }
+
+    @Transactional
+    public Peticion actualizarPeticion(Long peticion_id, PeticionDTO peticion) {
+        // Verificar que la peticion existe
+        Peticion peticionExistente = peticionRepository.findById(peticion_id)
+                .orElseThrow(() -> new ProyectoNoEncontradoException("Peticion no encontrada con id: " + peticion_id));
+        // estado terminado de la peticion
+        boolean consulta =peticionEstadoRepository.existsByPeticionIdAndPeticionEstadoIdEqualsTwo(peticion_id);
+        if(consulta == true) {
+            throw new ProyectoTerminadoException("La peticion esta en estado terminada y no se puede modificar");
+        }
+        // Validar que el nombre y otros campos no sean nulos o vacíos
+        validateFieldsNotNull(peticion);
+
+        // Actualizar los detalles del proyecto
+
+        TipoPeticion tipoPeticion = tipoPeticionRepository.findById(peticion.getIdTipoPeticion().intValue())
+                .orElseThrow(() -> new ProyectoNoEncontradoException("Tipo de Peticion no encontrada con id: " + peticion.getIdTipoPeticion().intValue()));
+
+        Cliente cliente = clientesRepository.findById(peticion.getIdCliente().intValue())
+                .orElseThrow(() -> new ProyectoNoEncontradoException("Cliente no encontrado con id: " + peticion.getIdCliente().intValue()));
+
+        peticionExistente.setComentarioPeticion(peticion.getComentarioPeticion());
+        peticionExistente.setTipoPeticion(tipoPeticion);
+        peticionExistente.setCliente(cliente);
+
+        // Guardar el proyecto actualizado
+        return peticionRepository.save(peticionExistente);
+    }
+
+
+
+    //eliminar peticion
+    //cancelar peticion
 
 
 }
