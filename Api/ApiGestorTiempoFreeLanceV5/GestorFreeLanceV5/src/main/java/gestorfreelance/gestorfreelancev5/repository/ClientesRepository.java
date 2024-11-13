@@ -13,6 +13,4 @@ public interface ClientesRepository extends JpaRepository<Cliente, Integer> {
     List<Cliente> findByNombreContaining(String nombre);
     Cliente findByEmail(String email);
     List<Cliente> findByDireccion(Direccion direccion);
-    @Query("SELECT c.clienteId FROM Cliente c WHERE c.clienteId = :clienteId")
-    Cliente findClienteByProyectoId(@Param("clienteId") Long clienteId);
 }

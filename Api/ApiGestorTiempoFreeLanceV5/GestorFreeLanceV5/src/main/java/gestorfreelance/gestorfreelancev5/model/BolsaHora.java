@@ -24,9 +24,7 @@ public class BolsaHora {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bolsaId;
 
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+
 
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
