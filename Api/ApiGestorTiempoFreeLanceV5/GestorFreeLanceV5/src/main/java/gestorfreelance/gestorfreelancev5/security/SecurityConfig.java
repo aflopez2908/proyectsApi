@@ -10,6 +10,7 @@ import gestorfreelance.gestorfreelancev5.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -57,6 +58,7 @@ public class SecurityConfig {
                             ,"/v3/api-docs/**"
                             ,"/swagger-ui/**"
                             ,"/swagger-ui/index.html").permitAll();
+              //      auth.requestMatchers(HttpMethod.PUT, "/api/v1/user/**").hasAuthority("ADMIN"); // Asegura que solo los ADMIN accedan
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {

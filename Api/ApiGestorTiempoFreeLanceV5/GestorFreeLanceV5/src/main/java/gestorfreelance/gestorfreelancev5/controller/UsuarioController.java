@@ -83,6 +83,7 @@ public class UsuarioController {
         }
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario usuario) {
@@ -98,8 +99,7 @@ public class UsuarioController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            // Registrar el error para análisis
-            e.printStackTrace(); // Puedes reemplazar esto con un logger si tienes uno configurado
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("No se pudo completar la actualización. Por favor, inténtelo de nuevo más tarde.");
         }
     }
@@ -155,6 +155,7 @@ public class UsuarioController {
         }
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/unlock")
     public ResponseEntity<?> unlockUsuario(@RequestBody Usuario usuario) {
@@ -167,30 +168,6 @@ public class UsuarioController {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Error al desbloquear el usuario: " + e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/enviarCorreo/{id}")
-    public ResponseEntity<?> enviarCorreoAUsuario(
-            @PathVariable Integer id,
-            @RequestBody Map<String, String> request) {
-        try {
-            String asunto = request.get("asunto");
-            String mensaje = request.get("mensaje");
-
-            if (asunto == null || asunto.isEmpty() || mensaje == null || mensaje.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El asunto y el mensaje son obligatorios.");
-            }
-
-            usuarioService.enviarCorreoAUsuarioEspecifico(id, asunto, mensaje);
-            return ResponseEntity.ok("Correo enviado exitosamente al usuario con ID: " + id);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
