@@ -1,8 +1,10 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
+import gestorfreelance.gestorfreelancev5.DTO.UpdateTareaRequestDTO;
 import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
+import gestorfreelance.gestorfreelancev5.model.TareaPrioridad;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +50,33 @@ public class TaskController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
+        }
+    }
+
+    @PutMapping("/update")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> updateTarea(@RequestBody UpdateTareaRequestDTO updateRequest) {
+        try {
+            HistorialTarea historialActualizado = tareasService.updateTarea(
+                    updateRequest.getTareaId(),
+                    updateRequest.getDescripcionCambio(),
+                    updateRequest.getNuevaPrioridad(),
+                    updateRequest.getNuevoEstado(),
+                    updateRequest.getUsuarioId() // Pasar el ID del usuario
+            );
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Tarea actualizada exitosamente");
+            response.put("historialId", historialActualizado.getHistorialId().toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

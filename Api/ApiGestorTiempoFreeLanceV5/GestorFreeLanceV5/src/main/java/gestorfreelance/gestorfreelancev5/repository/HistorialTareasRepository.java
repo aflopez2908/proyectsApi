@@ -14,4 +14,6 @@ public interface HistorialTareasRepository extends JpaRepository<HistorialTarea,
     List<HistorialTarea> findByTarea(Tarea tarea);
     List<HistorialTarea> findByUsuario(Usuario usuario);
     List<HistorialTarea> findByFechaCambio(Date fechaCambio);
+    //HistorialTarea findBytareaaAndVigente(Tarea tarea , int vigente);
+    HistorialTarea findByTareaAndVigente(Tarea tarea, int vigente);
 }
