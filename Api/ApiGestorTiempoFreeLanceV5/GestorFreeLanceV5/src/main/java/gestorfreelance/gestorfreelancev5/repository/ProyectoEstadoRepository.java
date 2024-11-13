@@ -17,6 +17,8 @@ public interface ProyectoEstadoRepository extends JpaRepository<ProyectoEstado,L
     boolean existsByProyectoIdAndProyectoEstadoIdEqualsTwo(@Param("proyectoId") Long proyectoId);
 
 
+
+
     //actualizacion a 0 de todas las vigencias
     @Modifying
     @Transactional

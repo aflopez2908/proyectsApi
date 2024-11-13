@@ -1,14 +1,15 @@
 package gestorfreelance.gestorfreelancev5.service;
+import java.lang.reflect.Field;
 
 import gestorfreelance.gestorfreelancev5.DTO.ProyectoDTO;
-import gestorfreelance.gestorfreelancev5.exception.CorreoUsuarioNoDisponibleException;
-import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
-import gestorfreelance.gestorfreelancev5.exception.ResourceNotFoundException;
+import gestorfreelance.gestorfreelancev5.exception.*;
 import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -33,6 +34,9 @@ public class ProyectoService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ClientesRepository clientesRepository;
+
 
 
 
@@ -45,83 +49,183 @@ public class ProyectoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
     }
 
-
+    @Transactional
     public Proyecto crearProyecto(ProyectoDTO proyecto) {
-        Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getProyecto().getNombre());
-        if (proyectoExistente != null) {
-            throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
-        }
-        //falta insertar el numero de horas
-        EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(1);
-        Proyecto nuevoProyecto = proyectoRepository.save(proyecto.getProyecto());
-        Cliente cliente = proyectoRepository.findClienteByProyectoId(proyecto.getProyecto().getProyectoId().longValue());
 
-        Usuario miusuario= usuariosRepository.findMatchClient(proyecto.getProyecto().getProyectoId().longValue());
-        System.out.println(miusuario);
+        if (proyecto.getFechaInicio().isAfter(proyecto.getFechaFin())) {
+            throw new InvalidDataException("La fecha de fin no puede ser menor a la de inicio");
+        }
+
+
+        proyecto.setProyectoId(0);
+
+        validateFieldsNotNull(proyecto);
+
+        // Crear nuevo proyecto
+        Proyecto proyectoN = new Proyecto();
+        proyectoN.setNombre(proyecto.getNombre());
+        proyectoN.setDescripcion(proyecto.getDescripcion());
+        proyectoN.setCliente(clientesRepository.findById(proyecto.getClienteId())
+                .orElseThrow(() -> new ClienteNoEncontradoException("Cliente no encontrado")));
+
+        proyectoN.setFechaInicio(proyecto.getFechaInicio());
+        proyectoN.setFechaFin(proyecto.getFechaFin());
+
+        // Verificar si el proyecto ya existe
+        Proyecto proyectoExistente = proyectoRepository.findByNombre(proyecto.getNombre());
+        if (proyectoExistente != null) {
+            throw new ProyectoExistenteException("El proyecto ya existe y no se puede crear.");
+        }
+        Proyecto nuevoProyecto = proyectoRepository.save(proyectoN);
+        Cliente cliente = proyectoRepository.findClienteByProyectoId(nuevoProyecto.getProyectoId().longValue());
+
 
         // Crear y guardar la BolsaHora
         BolsaHora bolsaHora = new BolsaHora();
-        bolsaHora.setUsuario(miusuario);
         bolsaHora.setProyecto(nuevoProyecto);
         bolsaHora.setHorasTotales(proyecto.getHorasAsignadas());
         bolsaHora.setHorasUsadas(0);
         bolsaHora.setHorasRestantes(proyecto.getHorasAsignadas());
         bolsaHorasRepository.save(bolsaHora);
 
-
-        //envio de mensaje de creacion , debe ser el mismo email del cliente
+        // Enviar correo de bienvenida
         String subject = "Creacion de un nuevo proyecto";
         String body = "Hola " + cliente.getNombre() + ",\n\n" +
                 "Te informamos la creacion de un nuevo proyecto:\n" +
-                "Nombre de proyecto: " + proyecto.getProyecto().getNombre() + "\n" +
-                "descripcion: " + proyecto.getProyecto().getDescripcion() + "\n\n" +
+                "Nombre de proyecto: " + proyecto.getNombre() + "\n" +
+                "descripcion: " + proyecto.getDescripcion() + "\n\n" +
                 "Si tienes alguna pregunta o problema, no dudes en contactarnos.\n\n" +
                 "Saludos,\n" +
                 "El equipo de soporte";
+        enviarCorreoBienvenida(cliente, subject, body);
 
-        enviarCorreoBienvenida(cliente,subject,body);
-        registrarEstado(proyecto.getProyecto(), estadoProyecto, "Creacion del proyecto",1);
+        // Registrar estado del proyecto
+        EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(1);
+        registrarEstado(nuevoProyecto, estadoProyecto, "Creacion del proyecto", 1);
+
         return nuevoProyecto;
     }
 
-    public Proyecto cambioEstado(int id,int estado) {
+    public void validateFieldsNotNull(ProyectoDTO proyectoDTO) {
+        for (Field field : proyectoDTO.getClass().getDeclaredFields()) {
+            field.setAccessible(true);  // Permite acceder a los campos privados
+
+            try {
+                Object value = field.get(proyectoDTO);
+                if (value == null || (value instanceof String && ((String) value).trim().isEmpty())) {
+                    throw new InvalidDataException("El campo '" + field.getName() + "' no puede estar vacío o nulo.");
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error al acceder a los campos de ProyectoDTO");
+            }
+        }
+    }
+
+
+    public ProyectoEstado cambioEstado(int id,int estado) {
         Proyecto proyecto= proyectoRepository.findByProyectoId(id);
         EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(estado);
+        if (proyecto == null) {
+            throw new ResourceNotFoundException("Proyecto no encontrado con id: " + id);
+        }
+        if (estadoProyectoRepository.findById(estado) == null) {
+            throw new IllegalArgumentException("El estado proporcionado no es válido. Por favor, elija un estado correcto.");
+        }
+
         boolean consulta =proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(proyecto.getProyectoId().longValue());
         if(consulta == true) {
             throw new ProyectoTerminadoException("El proyecto ya fue terminado y no puede cambiar de estado");
         }
+
+        if (estadoProyecto.getEstadoId() == 2 || estadoProyecto.getEstadoId() == 3 ) {
+            if (estado==1){
+                throw new IllegalArgumentException("El estado proporcionado es de cracion y el proyecto ya fue creado");
+
+            }
+        }
         proyectoEstadoRepository.actualizarVigencia((long) id);
         registrarEstado(proyecto, estadoProyecto, "actualizacion",1);
-        return proyecto;
+        ProyectoEstado proyectos = proyectoEstadoRepository.findByProyectoId((long) id);
+        return proyectos;
 
     }
 
+    @Transactional
     public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
-        Proyecto proyecto = proyectoRepository.findById(proyecto_id).orElseThrow();
-        Proyecto proyectoExistente= proyectoRepository.findByNombre(proyecto.getNombre());
-        if (proyectoExistente != null) {
-            throw new IllegalArgumentException("El nombre ya esta asignado a otro proyecto");
+        // Verificar que el proyecto exista
+        Proyecto proyectoExistente = proyectoRepository.findById(proyecto_id)
+                .orElseThrow(() -> new ProyectoNoEncontradoException(proyecto_id));
+
+        boolean proyectoTerminado = proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(proyectoExistente.getProyectoId().longValue());
+        if (proyectoTerminado) {
+            throw new ProyectoTerminadoException("El proyecto ya esta terminado no se puede cambiar el estado");
         }
 
-        proyectoExistente = proyectoRepository.findById(proyecto_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con el ID: " + proyecto_id));
+        // Validar que el nombre y otros campos no sean nulos o vacíos
+        validarProyecto(detallesProyecto);
+
+
+        //verificar si el nombre ya esta en uso
+
+        if (proyectoExistente != null) {
+            throw new IllegalArgumentException("El proyecto ya existe y no se puede crear.");
+        }
+
+        // Verificar si el nombre del proyecto está siendo cambiado
+        if (!detallesProyecto.getNombre().equals(proyectoExistente.getNombre())) {
+            validarNombreUnico(detallesProyecto.getNombre());
+        }
+
+        // Actualizar los detalles del proyecto
         proyectoExistente.setNombre(detallesProyecto.getNombre());
         proyectoExistente.setDescripcion(detallesProyecto.getDescripcion());
         proyectoExistente.setCliente(detallesProyecto.getCliente());
         proyectoExistente.setFechaInicio(detallesProyecto.getFechaInicio());
         proyectoExistente.setFechaFin(detallesProyecto.getFechaFin());
-        Proyecto proyectoActualizado = proyectoRepository.save(proyectoExistente);
-        return proyectoActualizado;
+
+        // Guardar el proyecto actualizado
+        return proyectoRepository.save(proyectoExistente);
     }
 
+    private void validarProyecto(Proyecto proyecto) {
+        if (proyecto.getNombre() == null || proyecto.getNombre().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del proyecto no puede ser nulo o vacío.");
+        }
+
+        if (proyecto.getDescripcion() == null || proyecto.getDescripcion().isEmpty()) {
+            throw new IllegalArgumentException("La descripción del proyecto no puede ser nula o vacía.");
+        }
+
+        if (proyecto.getCliente() == null) {
+            throw new IllegalArgumentException("El cliente del proyecto no puede ser nulo.");
+        }
+
+        if (proyecto.getFechaInicio() == null) {
+            throw new IllegalArgumentException("La fecha de inicio del proyecto no puede ser nula.");
+        }
+
+        if (proyecto.getFechaFin() == null) {
+            throw new IllegalArgumentException("La fecha de fin del proyecto no puede ser nula.");
+        }
+
+        if (proyecto.getFechaInicio().isAfter(proyecto.getFechaFin())) {
+            throw new IllegalArgumentException("La fecha de inicio no puede ser posterior a la fecha de fin.");
+        }
+    }
+    private void validarNombreUnico(String nombre) {
+        Proyecto proyectoConMismoNombre = proyectoRepository.findByNombre(nombre);
+        if (proyectoConMismoNombre != null) {
+            throw new IllegalArgumentException("Ya existe un proyecto con el nombre '" + nombre + "'.");
+        }}
+
+    @Transactional
     public void eliminarProyecto(Long proyecto_id) {
         Proyecto proyecto = proyectoRepository.findById(proyecto_id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proyecto no encontrado con id: " + proyecto_id));
+                .orElseThrow(() -> new ProyectoNoEncontradoException(proyecto_id));
+        proyectoRepository.eliminarRelacionesPorProyectoId(proyecto_id);
         proyectoRepository.delete(proyecto);
     }
-
-
 
     private void registrarEstado(Proyecto proyecto, EstadoProyecto estado, String comentario, int vigencia) {
         ProyectoEstado proyectoEstado = new ProyectoEstado();
