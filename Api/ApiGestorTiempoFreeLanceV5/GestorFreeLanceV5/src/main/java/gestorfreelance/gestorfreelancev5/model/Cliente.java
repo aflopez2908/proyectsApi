@@ -27,7 +27,8 @@ public class Cliente {
     @Column(length = 20)
     private String telefono;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    //@ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "direccion_id")
     private Direccion direccion;
 }

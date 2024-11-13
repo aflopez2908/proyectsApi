@@ -16,5 +16,6 @@ import org.springframework.stereotype.Repository;
 public interface CiudadesRepository extends JpaRepository<Ciudad, Integer> {
     List<Ciudad> findByNombre(String nombre);
     List<Ciudad> findByPais(Pais pais);
+    Optional<Ciudad> findByNombreAndPais(String nombre, Pais pais);
    // Optional<Ciudad> findByNombreAndPaisId(String nombre, Integer paisId);
 }
