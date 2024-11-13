@@ -31,7 +31,8 @@ public class TaskService {
     private EmailService emailService;
     @Autowired
     private StringHttpMessageConverter stringHttpMessageConverter;
-
+    @Autowired
+    private BolsaHorasRepository bolsaHoraRepository;
 
     public List<Tarea> getAllTareas() {
         return tareasRepository.findAll();
@@ -41,10 +42,22 @@ public class TaskService {
         System.out.println("Tarea: " + tarea);
         Proyecto proyecto = tarea.getProyecto();
         System.out.println("Proyecto:" + proyecto);
+
+        // Verificar si el proyecto existe
         Proyecto proyectoExistente = proyectosRepository.findByProyectoId(proyecto.getProyectoId());
         if (proyectoExistente == null) {
             throw new ProyectoNotFoundException("El proyecto con ID " + proyecto.getProyectoId() + " no existe");
         }
+
+        // Validar la disponibilidad de horas en la bolsa de horas
+        BolsaHora bolsaHora = bolsaHoraRepository.findByProyecto_ProyectoId(proyecto.getProyectoId())
+                .orElseThrow(() -> new RuntimeException("El proyecto con ID " + proyecto.getProyectoId() + " no tiene una bolsa de horas asignada."));
+
+        if (bolsaHora.getHorasRestantes() <= 0) {
+            throw new RuntimeException("El proyecto con ID " + proyecto.getProyectoId() + " no cuenta con horas suficientes para la creación de tareas.");
+        }
+
+        // Crear y guardar la tarea si las validaciones se pasan
         return tareasRepository.save(tarea);
     }
 

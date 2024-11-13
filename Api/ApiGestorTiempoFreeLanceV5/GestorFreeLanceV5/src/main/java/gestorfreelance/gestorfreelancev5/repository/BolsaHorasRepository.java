@@ -10,10 +10,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository("BolsaHorasRepository")
 public interface BolsaHorasRepository  extends JpaRepository<BolsaHora, Integer>{
+/*    List<BolsaHora> findByProyecto(Proyecto proyecto);
+    List<BolsaHora> findByHorasRestantesGreaterThan(Integer horas);
+    Optional<BolsaHora> findByProyecto_ProyectoId(Integer proyectoId);
+    Optional<BolsaHora> findByProyectoId(Integer proyectoId);*/
     List<BolsaHora> findByProyecto(Proyecto proyecto);
     List<BolsaHora> findByHorasRestantesGreaterThan(Integer horas);
     Optional<BolsaHora> findByProyecto_ProyectoId(Integer proyectoId);
-
-
 
 }
