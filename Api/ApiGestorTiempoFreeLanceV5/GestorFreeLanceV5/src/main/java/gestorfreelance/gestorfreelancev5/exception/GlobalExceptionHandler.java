@@ -14,7 +14,12 @@ import java.net.BindException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-
+    // Puedes agregar manejadores específicos de otras excepciones si es necesario
+    @ExceptionHandler(ProyectoNoEncontradoException.class)
+    public ResponseEntity<String> handleProyectoNoEncontradoException(ProyectoNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Recurso no encontrado descrito como " + ex.getMessage());
+    }
 
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -23,19 +28,9 @@ public class GlobalExceptionHandler {
                 .body("Acceso denegado: " + ex.getMessage());
     }
 
-    // Maneja todas las excepciones generales
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGlobalException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Se produjo un error interno: error deconocido");
-    }
 
-    // Puedes agregar manejadores específicos de otras excepciones si es necesario
-    @ExceptionHandler(ProyectoNoEncontradoException.class)
-    public ResponseEntity<String> handleProyectoNoEncontradoException(ProyectoNoEncontradoException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body("Proyecto no encontrado: " + ex.getMessage());
-    }
+
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
@@ -80,6 +75,13 @@ public class GlobalExceptionHandler {
         // Aquí puedes loguear el error si es necesario
         return new ResponseEntity<>("Error al acceder a la base de datos: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    // Maneja todas las excepciones generales
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleGlobalException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Se produjo un error interno:"+ex.getMessage());
+    }
+
 
 
 

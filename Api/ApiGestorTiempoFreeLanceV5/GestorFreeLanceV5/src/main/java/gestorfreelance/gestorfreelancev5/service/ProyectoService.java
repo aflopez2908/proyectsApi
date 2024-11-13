@@ -155,7 +155,7 @@ public class ProyectoService {
     public Proyecto actualizarProyecto(Long proyecto_id, Proyecto detallesProyecto) {
         // Verificar que el proyecto exista
         Proyecto proyectoExistente = proyectoRepository.findById(proyecto_id)
-                .orElseThrow(() -> new ProyectoNoEncontradoException(proyecto_id));
+                .orElseThrow(() -> new ProyectoNoEncontradoException("proyecto no encontrado con el id:"+proyecto_id));
 
         boolean proyectoTerminado = proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(proyectoExistente.getProyectoId().longValue());
         if (proyectoTerminado) {
@@ -222,7 +222,7 @@ public class ProyectoService {
     @Transactional
     public void eliminarProyecto(Long proyecto_id) {
         Proyecto proyecto = proyectoRepository.findById(proyecto_id)
-                .orElseThrow(() -> new ProyectoNoEncontradoException(proyecto_id));
+                .orElseThrow(() -> new ProyectoNoEncontradoException("proyecto no encontrado con el id: "+proyecto_id));
         proyectoRepository.eliminarRelacionesPorProyectoId(proyecto_id);
         proyectoRepository.delete(proyecto);
     }
