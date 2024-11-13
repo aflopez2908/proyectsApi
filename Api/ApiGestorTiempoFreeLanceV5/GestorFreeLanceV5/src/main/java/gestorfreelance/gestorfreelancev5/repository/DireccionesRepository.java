@@ -10,7 +10,8 @@ import java.util.Optional;
 
 @Repository("DireccionesRepository")
 public interface DireccionesRepository extends JpaRepository<Direccion, Integer> {
-    List<Direccion> findByCalleContaining(String calle);
     List<Direccion> findByCiudad(Ciudad ciudad);
     Optional<Direccion> findByCalleAndCiudad_CiudadId(String calle, Integer ciudadId);
+    Optional<Direccion> findByCalleAndCiudad(String calle, Ciudad ciudad);
+    Optional<Direccion> findByCalleContaining(String calle);
 }

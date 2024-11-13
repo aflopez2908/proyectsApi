@@ -1,4 +1,5 @@
 package gestorfreelance.gestorfreelancev5.repository;
+import gestorfreelance.gestorfreelancev5.model.BolsaHora;
 import gestorfreelance.gestorfreelancev5.model.Cliente;
 import gestorfreelance.gestorfreelancev5.model.Proyecto;
 import gestorfreelance.gestorfreelancev5.model.Tarea;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProyectosRepository extends JpaRepository<Proyecto, Long> {
