@@ -67,7 +67,6 @@ public class UsuarioService {
             Usuario usuario = usuarioOpt.get();
             usuariosRepository.deleteById(id);
 
-            // Enviar correo de notificación
             System.out.println("hola 1 ");
             String emailBody = "Hola " + usuario.getNombre() + ", tu cuenta ha sido eliminada.";
             emailService.sendEmailwithAttachment(usuario.getEmail(), "Cuenta eliminada", emailBody);

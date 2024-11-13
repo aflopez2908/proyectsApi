@@ -5,7 +5,6 @@ import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +25,7 @@ public class TaskService {
     @Autowired
     private PrioridadesTareaRepository prioridadesTareaRepository;
     @Autowired
-    private TareasPrioridadesRepository tareasPrioridadesRepository;
-    @Autowired
     private EmailService emailService;
-    @Autowired
-    private StringHttpMessageConverter stringHttpMessageConverter;
     @Autowired
     private BolsaHorasRepository bolsaHoraRepository;
 
@@ -43,21 +38,17 @@ public class TaskService {
         Proyecto proyecto = tarea.getProyecto();
         System.out.println("Proyecto:" + proyecto);
 
-        // Verificar si el proyecto existe
         Proyecto proyectoExistente = proyectosRepository.findByProyectoId(proyecto.getProyectoId());
         if (proyectoExistente == null) {
             throw new ProyectoNotFoundException("El proyecto con ID " + proyecto.getProyectoId() + " no existe");
         }
 
-        // Validar la disponibilidad de horas en la bolsa de horas
         BolsaHora bolsaHora = bolsaHoraRepository.findByProyecto_ProyectoId(proyecto.getProyectoId())
                 .orElseThrow(() -> new RuntimeException("El proyecto con ID " + proyecto.getProyectoId() + " no tiene una bolsa de horas asignada."));
 
         if (bolsaHora.getHorasRestantes() <= 0) {
             throw new RuntimeException("El proyecto con ID " + proyecto.getProyectoId() + " no cuenta con horas suficientes para la creación de tareas.");
         }
-
-        // Crear y guardar la tarea si las validaciones se pasan
         return tareasRepository.save(tarea);
     }
 
@@ -91,26 +82,27 @@ public class TaskService {
     @Transactional
     public HistorialTarea updateTarea(Long tareaId, String descripcionCambio, int nuevaPrioridad, int nuevoEstado, Long usuarioId, Integer  horasConsumidas) {
 
-        // Buscar la tarea por ID
         Optional<Tarea> tareaExistenteOpt = tareasRepository.findById(tareaId.intValue());
         if (tareaExistenteOpt.isEmpty()) {
             throw new ProyectoNotFoundException("La tarea con ID " + tareaId + " no existe.");
         }
         Tarea tareaExistente = tareaExistenteOpt.get();
 
-        // Verificar que el estado no sea 0 ni 4
         HistorialTarea historialTareaestado = historialTareasRepository.findByTareaAndVigente(tareaExistente,1);
         if (historialTareaestado != null) {
             if (historialTareaestado.getEstadoTarea().getEstadoId() == 4 ) {
                 throw new IllegalArgumentException("La Tarea no se puede modificar ya se encuentra Finalizada");
             }
         }
-        //if (nuevoEstado == 0 || nuevoEstado == 4) {
         if (nuevoEstado == 0 ) {
                 throw new IllegalArgumentException("La Tarea ya se encuentra creada, estado 0 no permitido.");
         }
+        if (nuevoEstado == 4 ) {
+            if (horasConsumidas == null) {
+                throw new IllegalArgumentException("Para finalizar la tarea debe inputar las horas de cierre");
+            }
+        }
 
-        // Marcar los registros anteriores como no vigentes (`vigente = 0`)
         List<HistorialTarea> historialTareas = historialTareasRepository.findByTarea(tareaExistente);
         for (HistorialTarea historial : historialTareas) {
             if (historial.getVigente() == 1) { // Solo marcar los que estén vigentes
@@ -119,12 +111,10 @@ public class TaskService {
             }
         }
 
-        // Buscar el usuario que realiza el cambio
         Usuario usuario = usuariosRepository.findById(usuarioId.intValue())
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario con ID " + usuarioId + " no existe."));
 
 
-        // Verificar y actualizar la bolsa de horas si se proporcionan horas consumidas
         if (horasConsumidas != null) {
             if (horasConsumidas <= 0) {
                 throw new IllegalArgumentException("Las horas consumidas deben ser un número positivo.");
@@ -137,31 +127,26 @@ public class TaskService {
                 throw new RuntimeException("El proyecto con ID " + tareaExistente.getProyecto().getProyectoId() + " no tiene suficientes horas restantes.");
             }
 
-            // Descontar las horas y actualizar la bolsa de horas
             bolsaHora.setHorasUsadas(bolsaHora.getHorasUsadas() + horasConsumidas);
             bolsaHora.setHorasRestantes(bolsaHora.getHorasRestantes() - horasConsumidas);
             bolsaHoraRepository.save(bolsaHora);
         }
-        // Crear un nuevo registro de historial con los cambios
+
         HistorialTarea nuevoHistorial = new HistorialTarea();
         nuevoHistorial.setTarea(tareaExistente);
         nuevoHistorial.setCambio(descripcionCambio);
         nuevoHistorial.setFechaCambio(LocalDateTime.now());
-        nuevoHistorial.setVigente(1); // El nuevo registro es el vigente
-        nuevoHistorial.setUsuario(usuario); // Asignar el usuario
+        nuevoHistorial.setVigente(1);
+        nuevoHistorial.setUsuario(usuario);
 
-        // Establecer el nuevo estado y prioridad
         EstadoTarea nuevoEstadoTarea = new EstadoTarea();
         nuevoEstadoTarea.setEstadoId(nuevoEstado);
         nuevoHistorial.setEstadoTarea(nuevoEstadoTarea);
         nuevoHistorial.setPrioridadTarea(prioridadesTareaRepository.findByPrioridadId(nuevaPrioridad));
 
-
-
         PrioridadTarea prioridadTarea = new PrioridadTarea();
         prioridadTarea = prioridadesTareaRepository.findByPrioridadId(nuevaPrioridad);
 
-       //Enviar actualizacion de correo
         String emailHead  = "Actualización Tarea: "
                 + nuevoHistorial.getTarea().getTareaId() + " en el proyecto";
 
@@ -173,8 +158,6 @@ public class TaskService {
         System.out.println("Body: " + emailBody);
 
         emailService.sendEmailwithAttachment(usuario.getEmail(), emailHead, emailBody);
-        // Guardar el nuevo registro en la base de datos
         return historialTareasRepository.save(nuevoHistorial);
     }
-
 }

@@ -1,16 +1,15 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
 import gestorfreelance.gestorfreelancev5.DTO.UpdateTareaRequestDTO;
-import gestorfreelance.gestorfreelancev5.model.HistorialTarea;
-import gestorfreelance.gestorfreelancev5.model.Proyecto;
-import gestorfreelance.gestorfreelancev5.model.Tarea;
-import gestorfreelance.gestorfreelancev5.model.TareaPrioridad;
+import gestorfreelance.gestorfreelancev5.model.*;
+import gestorfreelance.gestorfreelancev5.service.HoraService;
 import gestorfreelance.gestorfreelancev5.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,9 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/task")
 public class TaskController {
+
     @Autowired
     private TaskService tareasService;
-
+    @Autowired
+    private HoraService horaService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
@@ -41,6 +42,7 @@ public class TaskController {
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<Tarea>> getAllTask() {

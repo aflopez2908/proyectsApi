@@ -1,16 +1,24 @@
 package gestorfreelance.gestorfreelancev5.controller;
 
 
+import gestorfreelance.gestorfreelancev5.DTO.HorasPorProyectoRequestDTO;
+import gestorfreelance.gestorfreelancev5.DTO.HorasPorUsuarioRangoRequestDTO;
+import gestorfreelance.gestorfreelancev5.DTO.HorasPorUsuarioRequestDTO;
 import gestorfreelance.gestorfreelancev5.DTO.RequestHorasDTO;
 import gestorfreelance.gestorfreelancev5.service.HoraService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/hour")
-@Validated // Asegura la validación de los parámetros
+@Validated
 public class HoraController {
 
     @Autowired
@@ -27,6 +35,7 @@ public class HoraController {
             return ResponseEntity.ok(resultado);
         }
     }
+
     @PostMapping("/create")
     public ResponseEntity<String> crearBolsaHoras(@RequestBody @Validated RequestHorasDTO requestHoras) {
         String resultado = horaService.crearBolsaHoras(requestHoras.getProyectoId(), requestHoras.getHoras());
@@ -36,5 +45,45 @@ public class HoraController {
         } else {
             return ResponseEntity.ok(resultado);
         }
+    }
+
+    @PostMapping("/usuario")
+    public ResponseEntity<Map<String, Integer>> getHorasPorUsuario(@RequestBody HorasPorUsuarioRequestDTO request) {
+        int totalHoras = horaService.getTotalHorasPorUsuario(request.getUsuarioId());
+        Map<String, Integer> response = new HashMap<>();
+        response.put("totalHoras", totalHoras);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/proyecto")
+    public ResponseEntity<Map<String, Integer>> getHorasUsadasPorProyecto(@RequestBody HorasPorProyectoRequestDTO request) {
+        int totalHorasUsadas = horaService.getTotalHorasUsadasPorProyecto(request.getProyectoId());
+        Map<String, Integer> response = new HashMap<>();
+        response.put("totalHorasUsadas", totalHorasUsadas);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/proyecto/restantes")
+    public ResponseEntity<Map<String, Integer>> getHorasRestantesPorProyecto(@RequestBody HorasPorProyectoRequestDTO request) {
+        int horasRestantes = horaService.getHorasRestantesPorProyecto(request.getProyectoId());
+        Map<String, Integer> response = new HashMap<>();
+        response.put("horasRestantes", horasRestantes);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/usuario/rango")
+    public ResponseEntity<Map<String, Integer>> getHorasPorUsuarioYRangoDeFechas(@RequestBody HorasPorUsuarioRangoRequestDTO request) {
+        LocalDateTime inicio = LocalDateTime.parse(request.getFechaInicio());
+        LocalDateTime fin = LocalDateTime.parse(request.getFechaFin());
+        int totalHoras = horaService.getHorasPorUsuarioYRangoDeFechas(request.getUsuarioId(), inicio, fin);
+        Map<String, Integer> response = new HashMap<>();
+        response.put("totalHoras", totalHoras);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/globales")
+    public ResponseEntity<Map<String, Object>> getEstadisticasGlobales() {
+        Map<String, Object> estadisticas = horaService.getEstadisticasGlobales();
+        return new ResponseEntity<>(estadisticas, HttpStatus.OK);
     }
 }
