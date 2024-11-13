@@ -14,7 +14,7 @@ public class ProyectoDTO {
     private Integer proyectoId;
     private String nombre;
     private String descripcion;
-    private Integer clienteId; // Mapeo del ID de Cliente en lugar del objeto completo
+    private Integer clienteId;
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
 
