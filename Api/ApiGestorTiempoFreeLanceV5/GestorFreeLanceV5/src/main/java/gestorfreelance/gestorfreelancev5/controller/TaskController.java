@@ -62,7 +62,8 @@ public class TaskController {
                     updateRequest.getDescripcionCambio(),
                     updateRequest.getNuevaPrioridad(),
                     updateRequest.getNuevoEstado(),
-                    updateRequest.getUsuarioId() // Pasar el ID del usuario
+                    updateRequest.getUsuarioId(),
+                    updateRequest.getHorasConsumidas()
             );
 
             Map<String, String> response = new HashMap<>();

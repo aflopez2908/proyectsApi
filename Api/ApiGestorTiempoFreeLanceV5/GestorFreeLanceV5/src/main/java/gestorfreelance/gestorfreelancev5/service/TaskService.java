@@ -89,7 +89,7 @@ public class TaskService {
         return historialTareasRepository.save(historialTarea);
     }
     @Transactional
-    public HistorialTarea updateTarea(Long tareaId, String descripcionCambio, int nuevaPrioridad, int nuevoEstado, Long usuarioId) {
+    public HistorialTarea updateTarea(Long tareaId, String descripcionCambio, int nuevaPrioridad, int nuevoEstado, Long usuarioId, Integer  horasConsumidas) {
 
         // Buscar la tarea por ID
         Optional<Tarea> tareaExistenteOpt = tareasRepository.findById(tareaId.intValue());
@@ -100,7 +100,6 @@ public class TaskService {
 
         // Verificar que el estado no sea 0 ni 4
         HistorialTarea historialTareaestado = historialTareasRepository.findByTareaAndVigente(tareaExistente,1);
-
         if (historialTareaestado != null) {
             if (historialTareaestado.getEstadoTarea().getEstadoId() == 4 ) {
                 throw new IllegalArgumentException("La Tarea no se puede modificar ya se encuentra Finalizada");
@@ -125,6 +124,24 @@ public class TaskService {
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario con ID " + usuarioId + " no existe."));
 
 
+        // Verificar y actualizar la bolsa de horas si se proporcionan horas consumidas
+        if (horasConsumidas != null) {
+            if (horasConsumidas <= 0) {
+                throw new IllegalArgumentException("Las horas consumidas deben ser un número positivo.");
+            }
+
+            BolsaHora bolsaHora = bolsaHoraRepository.findByProyecto_ProyectoId(tareaExistente.getProyecto().getProyectoId())
+                    .orElseThrow(() -> new RuntimeException("El proyecto con ID " + tareaExistente.getProyecto().getProyectoId() + " no tiene una bolsa de horas asignada."));
+
+            if (bolsaHora.getHorasRestantes() < horasConsumidas) {
+                throw new RuntimeException("El proyecto con ID " + tareaExistente.getProyecto().getProyectoId() + " no tiene suficientes horas restantes.");
+            }
+
+            // Descontar las horas y actualizar la bolsa de horas
+            bolsaHora.setHorasUsadas(bolsaHora.getHorasUsadas() + horasConsumidas);
+            bolsaHora.setHorasRestantes(bolsaHora.getHorasRestantes() - horasConsumidas);
+            bolsaHoraRepository.save(bolsaHora);
+        }
         // Crear un nuevo registro de historial con los cambios
         HistorialTarea nuevoHistorial = new HistorialTarea();
         nuevoHistorial.setTarea(tareaExistente);

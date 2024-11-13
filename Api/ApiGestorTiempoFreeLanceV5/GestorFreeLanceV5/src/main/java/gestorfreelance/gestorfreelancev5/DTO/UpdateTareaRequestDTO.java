@@ -16,4 +16,5 @@ public class UpdateTareaRequestDTO {
     private int nuevoEstado;
     @NotBlank
     private Long usuarioId;
+    private Integer horasConsumidas;
 }
