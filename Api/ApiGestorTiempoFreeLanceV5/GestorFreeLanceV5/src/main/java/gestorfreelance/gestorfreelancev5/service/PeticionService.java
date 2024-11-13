@@ -164,6 +164,13 @@ public class PeticionService {
 
 
     //eliminar peticion
+    @Transactional
+    public void eliminarPeticion(Long peticion_id) {
+        Peticion peticion = peticionRepository.findById(peticion_id)
+                .orElseThrow(() -> new ProyectoNoEncontradoException("proyecto no encontrado con el id: "+peticion_id));
+        peticionRepository.eliminarRelacionesPorPeticionId(peticion_id);
+        peticionRepository.delete(peticion);
+    }
     //cancelar peticion
 
 

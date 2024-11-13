@@ -164,6 +164,20 @@ public class PeticionController {
         return ResponseEntity.ok(peticionActualizada);
     }
 
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar una peticion", description = "Permite eliminar una peticion especificando su ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Peticion eliminada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "peticion no encontrada"),
+            @ApiResponse(responseCode = "400", description = "Error con los argumentos proporcionados"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    public ResponseEntity<String> EliminarPeticion(@PathVariable Long id) {
+        peticionService.eliminarPeticion(id);
+        return ResponseEntity.ok("peticion eliminado exitosamente");
+
+    }
+
 
 
 
