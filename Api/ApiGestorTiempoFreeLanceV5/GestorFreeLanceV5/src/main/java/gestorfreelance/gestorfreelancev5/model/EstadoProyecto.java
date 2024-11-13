@@ -25,5 +25,9 @@ public class EstadoProyecto {
     private Integer estadoId;
     
     @Column(nullable = false, length = 50)
-    private String nombre;    
+    private String nombre;
+
+    public void setId(long l) {
+
+    }
 }

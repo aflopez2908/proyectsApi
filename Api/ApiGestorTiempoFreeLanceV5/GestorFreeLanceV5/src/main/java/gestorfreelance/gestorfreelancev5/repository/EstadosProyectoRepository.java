@@ -11,7 +11,5 @@ public interface EstadosProyectoRepository extends JpaRepository<EstadoProyecto,
     EstadoProyecto findByNombre(String nombre);
     EstadoProyecto findById(int id);
 
-    @Query("SELECT p.proyectoId, p.nombre,p.descripcion, p.cliente, p.fechaInicio, p.fechaFin, e.proyectoEstadoId, e.fechaCambio, e.comentario, e.vigencia FROM Proyecto p INNER JOIN ProyectoEstado e ON p.proyectoId = :id")
-    EstadoProyecto customFind(@Param("id") int id);
 
 }
