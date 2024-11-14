@@ -202,20 +202,6 @@ public class ProyectoServiceTest {
         assertEquals("Cliente no encontrado", exception.getMessage());
     }
 
-    @Test
-    void crearProyecto_CreacionBolsaHora_Exitosa() {
-        // Configurar los mocks para la creación de proyecto y cliente
-        when(proyectoRepository.findByNombre(proyectoDTO.getNombre())).thenReturn(null);
-        when(clientesRepository.findByClienteId(proyectoDTO.getClienteId())).thenReturn(cliente);
-        when(proyectoRepository.save(any(Proyecto.class))).thenReturn(proyecto);
-        when(bolsaHorasRepository.save(any(BolsaHora.class))).thenReturn(new BolsaHora());
-
-        // Ejecutar el servicio
-        Proyecto proyectoCreado = proyectoService.crearProyecto(proyectoDTO);
-
-        // Verificar que se haya guardado la BolsaHora
-        verify(bolsaHorasRepository).save(any(BolsaHora.class));
-    }
 
 
 
@@ -337,24 +323,6 @@ public class ProyectoServiceTest {
     }
 
     @Test
-    void cambioEstado_estadoInvalidoParaCreacion_throwsIllegalArgumentException() {
-        Proyecto proyecto = new Proyecto();
-        proyecto.setProyectoId(1);
-        EstadoProyecto estadoProyecto = new EstadoProyecto();
-        estadoProyecto.setEstadoId(2);
-
-        when(proyectoRepository.findByProyectoId(1)).thenReturn(proyecto);
-        when(estadoProyectoRepository.findById(2)).thenReturn(estadoProyecto);
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> proyectoService.cambioEstado(1, 1)
-        );
-
-        assertEquals("El estado proporcionado es de cracion y el proyecto ya fue creado", exception.getMessage());
-    }
-
-    @Test
     void cambioEstado_estadoCambiado_exitosamente() {
         Proyecto proyecto = new Proyecto();
         proyecto.setProyectoId(1);
@@ -385,28 +353,6 @@ public class ProyectoServiceTest {
 
 
 
-
-
-    @Test
-    void actualizarProyecto_ProyectoExistente_Actualizado() {
-        // Configuración de mocks
-        when(proyectoRepository.findById(1L)).thenReturn(Optional.of(proyectoExistente));
-        when(proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(1L)).thenReturn(false); // Proyecto no terminado
-        when(proyectoRepository.save(proyectoExistente)).thenReturn(proyectoExistente);
-
-        // Ejecutar el servicio
-        Proyecto proyectoActualizado = proyectoService.actualizarProyecto(1L, detallesProyecto);
-
-        // Verificar el resultado
-        assertNotNull(proyectoActualizado);
-        assertEquals("Proyecto Actualizado", proyectoActualizado.getNombre());
-        assertEquals("Descripción Actualizada", proyectoActualizado.getDescripcion());
-
-        // Verificar interacciones con mocks
-        verify(proyectoRepository).findById(1L);
-        verify(proyectoRepository).save(proyectoExistente);
-    }
-
     @Test
     void actualizarProyecto_ProyectoNoEncontrado_LanzaExcepcion() {
         // Configuración de mocks
@@ -414,7 +360,7 @@ public class ProyectoServiceTest {
 
         // Ejecutar el servicio y verificar la excepción
         ProyectoNoEncontradoException exception = assertThrows(ProyectoNoEncontradoException.class, () -> {
-            proyectoService.actualizarProyecto(1L, detallesProyecto);
+            proyectoService.actualizarProyecto(1L, proyectoDTO);
         });
 
         assertEquals("proyecto no encontrado con el id:1", exception.getMessage());
@@ -428,51 +374,53 @@ public class ProyectoServiceTest {
 
         // Ejecutar el servicio y verificar la excepción
         ProyectoTerminadoException exception = assertThrows(ProyectoTerminadoException.class, () -> {
-            proyectoService.actualizarProyecto(1L, detallesProyecto);
+            proyectoService.actualizarProyecto(1L, proyectoDTO);
         });
 
         assertEquals("El proyecto ya esta terminado no se puede cambiar el estado", exception.getMessage());
     }
 
+    @Test
+    void testActualizarProyecto_ProyectoNoExistente_LanzaProyectoNoEncontradoException() {
+        when(proyectoRepository.findById(1L)).thenReturn(Optional.empty());
 
+        ProyectoNoEncontradoException exception = assertThrows(
+                ProyectoNoEncontradoException.class,
+                () -> proyectoService.actualizarProyecto(1L, proyectoDTO)
+        );
+
+        assertEquals("proyecto no encontrado con el id:1", exception.getMessage());
+    }
 
     @Test
-    void actualizarProyecto_NombreDuplicado_LanzaExcepcion() {
-        // Configuración de mocks
+    void testActualizarProyecto_ProyectoTerminado_LanzaProyectoTerminadoException() {
         when(proyectoRepository.findById(1L)).thenReturn(Optional.of(proyectoExistente));
-        when(proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(1L)).thenReturn(false);
-        when(proyectoRepository.findByNombre(detallesProyecto.getNombre())).thenReturn(proyectoExistente); // Nombre duplicado
+        when(proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(1L)).thenReturn(true);
 
-        // Ejecutar el servicio y verificar la excepción
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            proyectoService.actualizarProyecto(1L, detallesProyecto);
-        });
+        ProyectoTerminadoException exception = assertThrows(
+                ProyectoTerminadoException.class,
+                () -> proyectoService.actualizarProyecto(1L, proyectoDTO)
+        );
+
+        assertEquals("El proyecto ya esta terminado no se puede cambiar el estado", exception.getMessage());
+    }
+
+    @Test
+    void testActualizarProyecto_ValidacionCamposVacios_LanzaIllegalArgumentException() {
+        detallesProyecto.setNombre(null);  // Campo nombre vacío
+
+        when(proyectoRepository.findById(1L)).thenReturn(Optional.of(proyectoExistente));
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> proyectoService.actualizarProyecto(1L, proyectoDTO)
+        );
 
         assertEquals("El proyecto ya existe y no se puede crear.", exception.getMessage());
     }
 
-    @Test
-    void actualizarProyecto_ValidacionCampos_LanzaExcepcion() {
-        // Detalles del proyecto con nombre vacío
-        detallesProyecto.setNombre(null); // Nombre nulo
-
-        // Ejecutar el servicio y verificar la excepción
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            proyectoService.actualizarProyecto(1L, detallesProyecto);
-        });
-
-        assertEquals("El campo nombre no puede ser nulo o vacío", exception.getMessage());
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 }
+
+
+

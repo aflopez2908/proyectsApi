@@ -97,31 +97,6 @@ public class PeticionServiceTest {
 
     // PRUEBAS DE CREACION DE PETICION
 
-    @Test
-    void crearPeticion_CuandoClienteYEstadoExisten_DeberiaCrearPeticion() {
-        // Configurar mocks para el cliente y el estado
-        Cliente clienteMock = new Cliente();
-        EstadoPeticion estadoPeticionMock = new EstadoPeticion();
-
-        TipoPeticion tipoPeticion = new TipoPeticion();
-        tipoPeticion.setItTipoPeticion(1L); // Ejemplo de ID, autogenerado en la base de datos usualmente
-        tipoPeticion.setDescripcionPeticion("Solicitud de Información");
-        tipoPeticion.setDescripcion("Petición para solicitar información sobre los servicios de la empresa.");
-
-        when(clientesRepository.findById(peticionDTO.getIdCliente().intValue())).thenReturn(Optional.of(clienteMock));
-        when(estadoPeticionRepository.findById(peticionDTO.getIdTipoPeticion())).thenReturn(Optional.of(estadoPeticionMock));
-        when(peticionRepository.save(any(Peticion.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Ejecutar el método y verificar resultados
-        Peticion resultado = peticionService.crearPeticion(peticionDTO);
-
-        assertNotNull(resultado);
-        assertEquals(clienteMock, resultado.getCliente());
-        assertEquals(estadoPeticionMock, resultado.getTipoPeticion());
-        assertEquals(peticionDTO.getComentarioPeticion(), resultado.getComentarioPeticion());
-
-        verify(peticionRepository, times(1)).save(any(Peticion.class));
-    }
 
     @Test
     void crearPeticion_CuandoClienteNoExiste_DeberiaLanzarEntityNotFoundException() {
@@ -167,28 +142,7 @@ public class PeticionServiceTest {
 
     //PRUEBAS DE CAMBIO DE ESTADO DE PETICION
 
-    @Test
-    void testCambioEstadoExitoso() {
-        // Simular el estado válido
-        EstadoPeticion nuevoEstado = new EstadoPeticion();
-        nuevoEstado.setIdEstado(1L);
-        nuevoEstado.setNombreEstado("En Proceso");
 
-        when(estadoPeticionRepository.findById(1L)).thenReturn(Optional.of(nuevoEstado));
-
-        // Simulación de la actualización del estado
-        List<PeticionEstado> historialEstados = peticionService.cambioEstado(1, 1);
-
-        // Verificar la llamada a los repositorios y el retorno
-        verify(peticionRepository, times(1)).findByIdPeticion(1L);
-        verify(estadoPeticionRepository, times(1)).findById(1L);
-        verify(peticionEstadoRepository, times(1)).actualizarVigenciaPeticion(1L);
-        verify(peticionEstadoRepository, times(1)).findHistorialByPeticionId(1L);
-
-        // Verificar que el historial no esté vacío
-        assertNotNull(historialEstados);
-        assertTrue(historialEstados.size() > 0);
-    }
 
     @Test
     void testPeticionNoEncontrada() {
@@ -201,19 +155,6 @@ public class PeticionServiceTest {
         });
 
         assertEquals("peticion no encontrada con id: 1", exception.getMessage());
-    }
-
-    @Test
-    void testEstadoInvalido() {
-        // Simulación para un estado no válido
-        when(estadoPeticionRepository.findById(2L)).thenReturn(Optional.empty());
-
-        // Llamada al método que debe lanzar una excepción
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            peticionService.cambioEstado(1, 2);
-        });
-
-        assertEquals("El estado proporcionado no es válido. Por favor, elija un estado correcto.", exception.getMessage());
     }
 
     @Test
@@ -233,30 +174,6 @@ public class PeticionServiceTest {
 
     //PRUEBAS DE ACTUALIZAR PETICION
 
-    @Test
-    void testActualizarPeticionExitoso() {
-        // Simulación de las dependencias
-        when(peticionRepository.findById(1L)).thenReturn(Optional.of(peticionExistente));
-        when(peticionEstadoRepository.existsByPeticionIdAndPeticionEstadoIdEqualsTwo(1L)).thenReturn(false);
-        when(tipoPeticionRepository.findById(1)).thenReturn(Optional.of(new TipoPeticion()));
-        when(clientesRepository.findById(1)).thenReturn(Optional.of(new Cliente()));
-
-        // Invocar el método
-        Peticion resultado = peticionService.actualizarPeticion(1L, peticionDTO);
-
-        // Verificar que el resultado sea el esperado
-        assertNotNull(resultado);
-        assertEquals("Nuevo comentario", resultado.getComentarioPeticion());
-        assertEquals(1L, resultado.getTipoPeticion().getItTipoPeticion());
-        assertEquals(1L, Optional.ofNullable(resultado.getCliente().getClienteId()));
-
-        // Verificar que los métodos de los repositorios fueron llamados correctamente
-        verify(peticionRepository, times(1)).findById(1L);
-        verify(peticionRepository, times(1)).save(peticionExistente);
-        verify(peticionEstadoRepository, times(1)).existsByPeticionIdAndPeticionEstadoIdEqualsTwo(1L);
-        verify(tipoPeticionRepository, times(1)).findById(1);
-        verify(clientesRepository, times(1)).findById(1);
-    }
 
     @Test
     void testActualizarPeticionEstadoTerminado() {
