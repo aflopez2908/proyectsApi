@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +73,7 @@ public class HoraController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(summary = "Get total hours worked by a user", description = "Obtiene el total de horas trabajadas por un usuario")
     @PostMapping("/usuario")
     public ResponseEntity<Map<String, Integer>> getHorasPorUsuario(@RequestBody HorasPorUsuarioRequestDTO request) {
@@ -80,6 +82,7 @@ public class HoraController {
         response.put("totalHoras", totalHoras);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(summary = "Get total hours used by a project", description = "Obtiene el total de horas usadas en un proyecto")
     @PostMapping("/proyecto")
     public ResponseEntity<Map<String, Integer>> getHorasUsadasPorProyecto(@RequestBody HorasPorProyectoRequestDTO request) {
@@ -96,6 +99,7 @@ public class HoraController {
         response.put("horasRestantes", horasRestantes);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @Operation(summary = "Get total hours worked by a user within a date range", description = "Obtiene el total de horas trabajadas por un usuario en un rango de fechas")
     @PostMapping("/usuario/rango")
     public ResponseEntity<Map<String, Integer>> getHorasPorUsuarioYRangoDeFechas(@RequestBody HorasPorUsuarioRangoRequestDTO request) {
@@ -106,6 +110,7 @@ public class HoraController {
         response.put("totalHoras", totalHoras);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Get global statistics of hours", description = "Obtiene estadísticas globales sobre las horas trabajadas, restantes y total de proyectos y tareas")
     @GetMapping("/globales")
     public ResponseEntity<Map<String, Object>> getEstadisticasGlobales() {
