@@ -9,6 +9,10 @@ import gestorfreelance.gestorfreelancev5.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +28,10 @@ public class HoraService {
 
     @Autowired
     private BolsaHorasRepository bolsaHorasRepository;
+    @Autowired
+    private HistorialTareasRepository historialTareasRepository;
+    @Autowired
+    private TareasRepository tareasRepository;
 
     @Autowired
     private EmailService emailService;
@@ -147,4 +155,55 @@ public class HoraService {
 
         emailService.sendEmailwithAttachment(to, subject, body);
     }
+
+    public int getTotalHorasPorUsuario(Long usuarioId) {
+        List<BolsaHora> bolsasHoras = bolsaHorasRepository.findByProyecto_Tarea_Historial_UsuarioId(usuarioId);
+        return bolsasHoras.stream()
+                .mapToInt(BolsaHora::getHorasUsadas)
+                .sum();
+    }
+
+    public int getTotalHorasUsadasPorProyecto(Long proyectoId) {
+        BolsaHora bolsaHora = bolsaHorasRepository.findByProyecto_ProyectoId(proyectoId.intValue())
+                .orElseThrow(() -> new RuntimeException("El proyecto con ID " + proyectoId + " no tiene una bolsa de horas asignada."));
+        return bolsaHora.getHorasUsadas();
+    }
+
+    public int getHorasRestantesPorProyecto(Long proyectoId) {
+        BolsaHora bolsaHora = bolsaHorasRepository.findByProyecto_ProyectoId(proyectoId.intValue())
+                .orElseThrow(() -> new RuntimeException("El proyecto con ID " + proyectoId + " no tiene una bolsa de horas asignada."));
+        return bolsaHora.getHorasRestantes();
+    }
+
+    public int getHorasPorUsuarioYRangoDeFechas(Long usuarioId, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        List<BolsaHora> bolsasHoras = bolsaHorasRepository.findByProyecto_Tarea_Historial_UsuarioIdAndFechaBetween(usuarioId, fechaInicio, fechaFin);
+        return bolsasHoras.stream()
+                .mapToInt(BolsaHora::getHorasUsadas)
+                .sum();
+    }
+
+    public Map<String, Object> getEstadisticasGlobales() {
+        Map<String, Object> estadisticasGlobales = new HashMap<>();
+
+        int totalHorasUsadas = bolsaHorasRepository.findAll().stream()
+                .mapToInt(BolsaHora::getHorasUsadas)
+                .sum();
+
+        int totalHorasRestantes = bolsaHorasRepository.findAll().stream()
+                .mapToInt(BolsaHora::getHorasRestantes)
+                .sum();
+
+        int totalHorasTrabajadas = totalHorasUsadas;
+        long totalProyectos = proyectoRepository.count();
+        long totalTareas = tareasRepository.count();
+
+        estadisticasGlobales.put("totalHorasUsadas", totalHorasUsadas);
+        estadisticasGlobales.put("totalHorasRestantes", totalHorasRestantes);
+        estadisticasGlobales.put("totalHorasTrabajadas", totalHorasTrabajadas);
+        estadisticasGlobales.put("totalProyectos", totalProyectos);
+        estadisticasGlobales.put("totalTareas", totalTareas);
+
+        return estadisticasGlobales;
+    }
+
 }
