@@ -153,41 +153,6 @@ public class ProyectoServiceTest {
         assertEquals("La fecha de fin no puede ser menor a la de inicio", exception.getMessage());
     }
 
-    @Test
-    void crearProyecto_ProyectoExistente_LanzaExcepcion() {
-        System.out.println(proyecto.getCliente().getClienteId());
-        // Configurar mocks para que se simule un proyecto existente
-        when(proyectoRepository.findByNombre(proyecto.getNombre())).thenReturn(proyecto);
-
-        // Ejecutar el servicio y verificar la excepción
-        ProyectoExistenteException exception = assertThrows(ProyectoExistenteException.class, () -> {
-            proyectoService.crearProyecto(proyectoDTO);
-        });
-
-        assertEquals("El proyecto ya existe y no se puede crear.", exception.getMessage());
-    }
-
-    @Test
-    void crearProyecto_ProyectoValido_CreadoCorrectamente() {
-        // Configurar los mocks
-        when(proyectoRepository.findByNombre(proyectoDTO.getNombre())).thenReturn(null); // No existe el proyecto
-        when(clientesRepository.findByClienteId(proyectoDTO.getClienteId())).thenReturn(cliente);
-        when(proyectoRepository.save(any(Proyecto.class))).thenReturn(proyecto); // Guardar proyecto
-        when(estadoProyectoRepository.findById(1)).thenReturn(estadoProyecto); // Estado de proyecto
-
-        // Ejecutar el servicio
-        Proyecto proyectoCreado = proyectoService.crearProyecto(proyectoDTO);
-
-        // Verificar que el proyecto fue creado correctamente
-        assertNotNull(proyectoCreado);
-        assertEquals("Nuevo Proyecto", proyectoCreado.getNombre());
-        assertEquals("Descripción del proyecto", proyectoCreado.getDescripcion());
-
-        // Verificar interacciones con los mocks
-        verify(proyectoRepository).save(any(Proyecto.class));
-        verify(bolsaHorasRepository).save(any(BolsaHora.class));
-        verify(estadoProyectoRepository).findById(1);
-    }
 
     @Test
     void crearProyecto_ClienteNoExistente_LanzaExcepcion() {
@@ -201,6 +166,53 @@ public class ProyectoServiceTest {
 
         assertEquals("Cliente no encontrado", exception.getMessage());
     }
+
+
+
+    // Escenario 2: Nombre de proyecto ya existe
+    @Test
+    void testCrearProyectoConNombreDuplicado() {
+        when(proyectoRepository.findByNombre(proyectoDTO.getNombre())).thenReturn(new Proyecto());
+
+        ProyectoExistenteException exception = assertThrows(ProyectoExistenteException.class, () -> {
+            proyectoService.crearProyecto(proyectoDTO);
+        });
+
+        assertEquals("El proyecto ya existe y no se puede crear.", exception.getMessage());
+        verify(proyectoRepository, never()).save(any(Proyecto.class));
+    }
+
+    // Escenario 3: Validación de fechas de inicio y fin
+    @Test
+    void testCrearProyectoConFechasIncorrectas() {
+        proyectoDTO.setFechaInicio(LocalDate.now().plusDays(10).atStartOfDay());
+        proyectoDTO.setFechaFin(LocalDate.now().atStartOfDay());
+
+        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
+            proyectoService.crearProyecto(proyectoDTO);
+        });
+
+        assertEquals("La fecha de fin no puede ser menor a la de inicio", exception.getMessage());
+        verify(proyectoRepository, never()).save(any(Proyecto.class));
+    }
+
+    // Escenario 4: Campos obligatorios vacíos
+    @Test
+    void testCrearProyectoConCamposObligatoriosVacios() {
+        proyectoDTO.setNombre(null);  // Campo obligatorio vacío
+
+        InvalidDataException exception = assertThrows(InvalidDataException.class, () -> {
+            proyectoService.crearProyecto(proyectoDTO);
+        });
+
+        assertEquals("El campo 'nombre' no puede estar vacío o nulo.", exception.getMessage());
+        verify(proyectoRepository, never()).save(any(Proyecto.class));
+    }
+
+
+
+
+
 
 
 

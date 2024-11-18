@@ -52,6 +52,7 @@ public class ProyectoService {
     @Transactional
     public Proyecto crearProyecto(ProyectoDTO proyecto) {
 
+
         if (proyecto.getFechaInicio().isAfter(proyecto.getFechaFin())) {
             throw new InvalidDataException("La fecha de fin no puede ser menor a la de inicio");
         }
@@ -124,6 +125,13 @@ public class ProyectoService {
 
 
     public ProyectoEstado cambioEstado(int id,int estado) {
+        //ProyectoEstado proyectoEstado= proyectoEstadoRepository.findByProyectoId((long) id);
+        //if (proyectoEstado.getProyectoEstadoId() == estado) {
+          //  throw new IllegalArgumentException("es el mismo estado en cual se encuentra");
+        //}
+
+        String comentario = new String();
+
         Proyecto proyecto= proyectoRepository.findByProyectoId(id);
         EstadoProyecto estadoProyecto = estadoProyectoRepository.findById(estado);
         if (proyecto == null) {
@@ -137,6 +145,8 @@ public class ProyectoService {
         if(consulta == true) {
             throw new ProyectoTerminadoException("El proyecto ya fue terminado y no puede cambiar de estado");
         }
+
+        System.out.println(estadoProyecto.getEstadoId());
 
         if (estadoProyecto.getEstadoId() == 2 || estadoProyecto.getEstadoId() == 3 ) {
             if (estado==1){

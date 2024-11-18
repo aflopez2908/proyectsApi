@@ -23,6 +23,8 @@ public class Peticion {
     private String comentarioPeticion;
 
 
+
+
     public Long getIdPeticion() {
         return idPeticion;
     }

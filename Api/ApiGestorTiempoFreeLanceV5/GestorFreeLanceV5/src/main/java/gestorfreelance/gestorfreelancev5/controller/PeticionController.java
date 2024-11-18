@@ -100,7 +100,7 @@ public class PeticionController {
 
 
     //actualizacion de la tabla de estados
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','CLIENT')")
     @PutMapping("/estado/{id}")
     @Operation(summary = "Cambia el estado de una peticion",
             description = "Este endpoint permite cambiar el estado de una petición. El proceso sigue los siguientes pasos:\n\n" +

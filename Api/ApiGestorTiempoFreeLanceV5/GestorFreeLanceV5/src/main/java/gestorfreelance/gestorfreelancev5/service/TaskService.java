@@ -1,6 +1,7 @@
 package gestorfreelance.gestorfreelancev5.service;
 
 import gestorfreelance.gestorfreelancev5.exception.ProyectoNotFoundException;
+import gestorfreelance.gestorfreelancev5.exception.ProyectoTerminadoException;
 import gestorfreelance.gestorfreelancev5.model.*;
 import gestorfreelance.gestorfreelancev5.repository.*;
 import jakarta.transaction.Transactional;
@@ -28,12 +29,20 @@ public class TaskService {
     private EmailService emailService;
     @Autowired
     private BolsaHorasRepository bolsaHoraRepository;
+    @Autowired
+    private ProyectoService proyectoService;
+
+
+    @Autowired
+    private ProyectoEstadoRepository proyectoEstadoRepository;
 
     public List<Tarea> getAllTareas() {
         return tareasRepository.findAll();
     }
     @Transactional
     public Tarea createTarea(Tarea tarea) {
+
+
         System.out.println("Tarea: " + tarea);
         Proyecto proyecto = tarea.getProyecto();
         System.out.println("Proyecto:" + proyecto);
@@ -41,6 +50,11 @@ public class TaskService {
         Proyecto proyectoExistente = proyectosRepository.findByProyectoId(proyecto.getProyectoId());
         if (proyectoExistente == null) {
             throw new ProyectoNotFoundException("El proyecto con ID " + proyecto.getProyectoId() + " no existe");
+        }
+
+        if(proyectoEstadoRepository.existsByProyectoIdAndProyectoEstadoIdEqualsTwo(proyectoExistente.getProyectoId().longValue())){
+            throw new ProyectoTerminadoException("el proyecto esta en estado terminado y no se puede asignar la tarea");
+
         }
 
         BolsaHora bolsaHora = bolsaHoraRepository.findByProyecto_ProyectoId(proyecto.getProyectoId())
@@ -67,6 +81,16 @@ public class TaskService {
         historialTarea.setEstadoTarea(estadoTarea);
         historialTarea.setPrioridadTarea(prioridadesTareaRepository.findByPrioridadId(1));
         Proyecto proyecto = proyectosRepository.findByProyectoId(tarea.getProyecto().getProyectoId());
+        if (proyecto== null){
+            throw new ProyectoNotFoundException("El proyecto no existe");
+
+        }else {
+
+            proyectoService.cambioEstado(proyecto.getProyectoId().intValue(),2);
+
+        }
+
+
         String emailHead  = "Nueva tarea creada: "
                 + tarea.getNombre() + " en el proyecto"
                 + proyecto.getNombre();

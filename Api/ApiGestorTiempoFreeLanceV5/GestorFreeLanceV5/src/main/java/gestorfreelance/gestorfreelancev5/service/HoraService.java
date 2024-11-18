@@ -117,8 +117,6 @@ public class HoraService {
         // Actualizar las horas restantes y las horas usadas
         bolsaHora.setHorasRestantes(horasRestantes - horasConsumidas);
         bolsaHora.setHorasUsadas(bolsaHora.getHorasUsadas() + horasConsumidas);
-        bolsaHorasRepository.save(bolsaHora);
-
         // Verificar si se ha alcanzado el 80% de consumo de las horas
         double porcentajeConsumido = (double) bolsaHora.getHorasUsadas() / bolsaHora.getHorasTotales() * 100;
         if (porcentajeConsumido >= 80) {
@@ -143,6 +141,9 @@ public class HoraService {
             // Notificación cuando se alcanza el 80% de las horas consumidas
             return "Advertencia: El 80% de las horas han sido consumidas. Quedan solo " + bolsaHora.getHorasRestantes() + " horas.";
         }
+        bolsaHorasRepository.save(bolsaHora);
+
+
 
         return "Horas consumidas exitosamente. Quedan " + bolsaHora.getHorasRestantes() + " horas.";
     }

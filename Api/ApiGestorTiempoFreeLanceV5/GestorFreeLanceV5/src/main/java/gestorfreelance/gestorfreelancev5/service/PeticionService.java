@@ -26,6 +26,9 @@ public class PeticionService {
     ClientesRepository clientesRepository;
 
     @Autowired
+    ProyectoService proyectoService;
+
+    @Autowired
     private PeticionEstadoRepository peticionEstadoRepository;
     @Autowired
     private EstadoPeticionRepository estadoPeticionRepository;
@@ -33,6 +36,8 @@ public class PeticionService {
 
     @Autowired
     private TipoPeticionRepository tipoPeticionRepository;
+    @Autowired
+    private ProyectosRepository proyectosRepository;
 
 
     public List<Peticion> getAllPeticiones() {
@@ -106,7 +111,9 @@ public class PeticionService {
         peticionNormal.setComentarioPeticion(peticion.getComentarioPeticion());
 
         peticionRepository.save(peticionNormal);
-        System.out.println("peticion"+peticion);
+
+        proyectoService.cambioEstado(peticion.getIdProyecto().intValue(),3);
+
         registrarEstado(peticionNormal, estadoPeticion,"creacion de peticion",1);
 
         return peticionNormal;

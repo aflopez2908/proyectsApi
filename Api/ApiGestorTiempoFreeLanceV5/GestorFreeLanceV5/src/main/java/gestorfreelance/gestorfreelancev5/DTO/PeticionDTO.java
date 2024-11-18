@@ -5,6 +5,16 @@ public class PeticionDTO {
     private Long idCliente;  // id del cliente en lugar de objeto Cliente
     private Long idTipoPeticion;  // id del tipo de petición en lugar de objeto TipoPeticion
     private String comentarioPeticion;
+    private Long idProyecto;
+
+
+    public Long getIdProyecto() {
+        return idProyecto;
+    }
+
+    public void setIdProyecto(Long idProyecto) {
+        this.idProyecto = idProyecto;
+    }
 
     // Getters y Setters
     public Long getIdCliente() {
